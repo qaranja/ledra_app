@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PayKenya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--navy:#F9F8F6;--navy-mid:#FFFFFF;--navy-light:#F3F2EF;--navy-pale:#ECEAE5;--amber:#B45309;--amber-dim:#92400E;--amber-glow:rgba(180,83,9,0.08);--white:#1C1917;--white-dim:rgba(28,25,23,0.5);--white-faint:rgba(28,25,23,0.05);--green:#166534;--red:#B91C1C;--border:rgba(28,25,23,0.1);--border-mid:rgba(28,25,23,0.06);--font-serif:'DM Serif Display',Georgia,serif;--font-body:'Outfit',sans-serif;--font-mono:'DM Mono',monospace;--radius:6px;--radius-lg:12px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{background:var(--navy);color:var(--white);font-family:var(--font-body);font-weight:400;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
+.app-header{background:var(--navy-mid);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo-mark{font-family:var(--font-serif);font-size:1.4rem;color:var(--white);letter-spacing:-0.02em}
+.logo-mark span{color:var(--amber)}
+.logo-tag{font-size:0.65rem;color:var(--white-dim);font-family:var(--font-mono);letter-spacing:0.15em;text-transform:uppercase;border:1px solid var(--border);padding:1px 6px;border-radius:3px;margin-left:8px}
+.header-right{font-size:0.7rem;font-family:var(--font-mono);color:var(--white-dim);text-align:right}
+.header-right strong{color:var(--amber);display:block}
+.app-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px)}
+.sidebar{background:var(--navy-mid);border-right:1px solid var(--border);padding:1.5rem 0;display:flex;flex-direction:column}
+.sidebar-section{padding:0 1rem 1.5rem;border-bottom:1px solid var(--border-mid);margin-bottom:1.5rem}
+.sidebar-section:last-child{border-bottom:none;margin-bottom:0}
+.sidebar-label{font-size:0.6rem;font-family:var(--font-mono);letter-spacing:0.18em;text-transform:uppercase;color:var(--white-dim);margin-bottom:0.75rem;padding-left:0.5rem}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--radius);cursor:pointer;font-size:0.85rem;color:var(--white-dim);transition:all 0.15s;border:1px solid transparent;margin-bottom:2px;background:none;width:100%;text-align:left;font-family:var(--font-body)}
+.nav-item:hover{background:var(--white-faint);color:var(--white)}
+.nav-item.active{background:var(--amber-glow);color:var(--amber);border-color:rgba(232,160,32,0.2);font-weight:500}
+.nav-icon{width:15px;height:15px;flex-shrink:0;opacity:0.6}
+.nav-item.active .nav-icon{opacity:1}
+.emp-badge{margin-left:auto;background:var(--amber);color:var(--navy);font-family:var(--font-mono);font-size:0.6rem;font-weight:500;padding:1px 6px;border-radius:10px;display:none}
+.emp-badge.show{display:block}
+.main{overflow-y:auto;max-height:calc(100vh - 60px)}
+.section{display:none;padding:2rem}
+.section.active{display:block}
+.page-title{margin-bottom:1.75rem}
+.page-title h1{font-family:var(--font-serif);font-size:1.75rem;font-weight:400;letter-spacing:-0.02em;line-height:1.15}
+.page-title h1 em{color:var(--amber);font-style:normal}
+.page-title p{font-size:0.75rem;color:var(--white-dim);margin-top:4px;font-family:var(--font-mono)}
+.card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem}
+.card-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-mid)}
+.card-dot{width:4px;height:4px;border-radius:50%;background:var(--amber);flex-shrink:0}
+.card-title{font-size:0.65rem;font-family:var(--font-mono);letter-spacing:0.18em;text-transform:uppercase;color:var(--amber)}
+.form-grid{display:grid;gap:1rem;margin-bottom:1rem}
+.cols-2{grid-template-columns:1fr 1fr}
+.cols-3{grid-template-columns:1fr 1fr 1fr}
+.field{display:flex;flex-direction:column;gap:5px}
+label{font-size:0.68rem;font-family:var(--font-mono);color:var(--white-dim);letter-spacing:0.05em;text-transform:uppercase}
+input,select{background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius);color:var(--white);font-family:var(--font-body);font-size:0.875rem;padding:9px 12px;transition:border-color 0.15s,box-shadow 0.15s;width:100%;outline:none;-webkit-appearance:none}
+input::placeholder{color:rgba(28,25,23,0.25)}
+input:focus,select:focus{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-glow)}
+select{cursor:pointer}
+select option{background:var(--navy-mid)}
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:10px;margin-bottom:1rem}
+.metric{background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border)}
+.metric.green::before{background:var(--green)}
+.metric.red::before{background:var(--red)}
+.metric.amber::before{background:var(--amber)}
+.metric-label{font-size:0.6rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.12em;color:var(--white-dim);margin-bottom:6px}
+.metric-value{font-family:var(--font-mono);font-size:0.95rem;font-weight:500;color:var(--white)}
+.metric.green .metric-value{color:var(--green)}
+.metric.red .metric-value{color:var(--red)}
+.metric.amber .metric-value{color:var(--amber)}
+.data-table{width:100%;border-collapse:collapse;font-size:0.825rem}
+.data-table th{font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-dim);font-weight:500;text-align:left;padding:6px 0 8px;border-bottom:1px solid var(--border)}
+.data-table td{padding:7px 0;border-bottom:1px solid var(--border-mid);color:var(--white)}
+.data-table td:last-child,.data-table th:last-child{text-align:right}
+.data-table tr:last-child td{border-bottom:none}
+.muted{color:var(--white-dim)!important}
+.mono{font-family:var(--font-mono);font-size:0.8rem}
+.total-row td{font-weight:600;border-top:1px solid var(--border)!important;border-bottom:none!important;padding-top:10px!important}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--radius);font-family:var(--font-body);font-size:0.825rem;font-weight:500;cursor:pointer;transition:all 0.15s;border:1px solid transparent;outline:none;white-space:nowrap}
+.btn-primary{background:var(--amber);color:var(--navy);border-color:var(--amber)}
+.btn-primary:hover{background:#F0AA28;transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--white);border-color:var(--border)}
+.btn-secondary:hover{border-color:rgba(245,240,232,0.3);background:var(--white-faint)}
+.btn-ghost{background:transparent;color:var(--white-dim);border-color:transparent}
+.btn-ghost:hover{color:var(--white)}
+.emp-item{display:flex;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid var(--border-mid);cursor:pointer;border-radius:var(--radius);transition:padding-left 0.15s,background 0.15s}
+.emp-item:hover{background:var(--white-faint);padding-left:8px}
+.emp-item:last-child{border-bottom:none}
+.emp-avatar{width:38px;height:38px;border-radius:50%;background:var(--navy-pale);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:0.7rem;color:var(--amber);flex-shrink:0}
+.emp-details{flex:1;min-width:0}
+.emp-name{font-size:0.875rem;font-weight:500;margin-bottom:2px}
+.emp-meta{font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim)}
+.emp-net{font-family:var(--font-mono);font-size:0.85rem;font-weight:500;color:var(--green);text-align:right;flex-shrink:0}
+.emp-net-label{font-size:0.6rem;color:var(--white-dim);text-align:right;font-family:var(--font-mono)}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:0.55rem;padding:2px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;letter-spacing:0.05em;text-transform:uppercase}
+.badge-amber{background:var(--amber-glow);color:var(--amber);border:1px solid rgba(232,160,32,0.25)}
+.badge-red{background:rgba(224,92,74,0.12);color:var(--red);border:1px solid rgba(224,92,74,0.25)}
+.payslip-wrap{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.payslip-header{background:var(--navy-light);padding:1.5rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start}
+.payslip-name{font-family:var(--font-serif);font-size:1.4rem;line-height:1.2;margin-bottom:8px}
+.payslip-meta{font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim);line-height:2}
+.payslip-month{font-family:var(--font-mono);font-size:0.75rem;color:var(--amber);background:var(--amber-glow);border:1px solid rgba(232,160,32,0.2);border-radius:var(--radius);padding:6px 12px;white-space:nowrap}
+.payslip-body{padding:1.5rem}
+.payslip-section{margin-bottom:1.25rem}
+.payslip-section-label{font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--amber);margin-bottom:8px}
+.payslip-net{background:linear-gradient(135deg,var(--navy-light),var(--navy-pale));border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.payslip-net-label{font-family:var(--font-mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--white-dim)}
+.payslip-net-value{font-family:var(--font-mono);font-size:1.75rem;font-weight:500;color:var(--green)}
+.drop-zone{border:1px dashed rgba(232,160,32,0.3);border-radius:var(--radius-lg);padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--amber-glow);margin-bottom:1rem}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--amber);background:rgba(232,160,32,0.18)}
+.drop-zone-icon{font-size:2rem;margin-bottom:0.75rem;opacity:0.5}
+.drop-zone p{color:var(--white-dim);font-size:0.875rem;margin-bottom:4px}
+.drop-zone small{font-family:var(--font-mono);font-size:0.65rem;color:rgba(245,240,232,0.3);letter-spacing:0.08em}
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.export-card{background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;cursor:pointer;transition:all 0.2s;text-align:left;font-family:var(--font-body)}
+.export-card:hover{border-color:var(--amber);transform:translateY(-2px);background:var(--navy-pale)}
+.export-card-icon{font-size:1.4rem;margin-bottom:8px}
+.export-card-title{font-size:0.875rem;font-weight:600;color:var(--white);margin-bottom:3px}
+.export-card-sub{font-size:0.7rem;color:var(--white-dim);font-family:var(--font-mono)}
+.notice{background:var(--navy-light);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:var(--radius);padding:10px 14px;font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim);line-height:1.7;margin-bottom:1.25rem}
+.import-errors{background:rgba(224,92,74,0.1);border:1px solid rgba(224,92,74,0.3);border-radius:var(--radius);padding:10px 14px;font-family:var(--font-mono);font-size:0.7rem;color:var(--red);line-height:1.7;margin-bottom:1rem;display:none;white-space:pre-line}
+.divider{display:flex;align-items:center;gap:12px;margin:1.25rem 0;font-family:var(--font-mono);font-size:0.6rem;color:rgba(245,240,232,0.2);letter-spacing:0.1em;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.rem-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border-mid);font-size:0.825rem}
+.rem-row:last-child{border-bottom:none}
+.rem-due{font-family:var(--font-mono);font-size:0.6rem;color:var(--amber);background:var(--amber-glow);padding:1px 7px;border-radius:3px;margin-left:8px}
+.rem-amount{font-family:var(--font-mono);font-size:0.8rem}
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--white-dim)}
+.empty-state-icon{font-size:2.5rem;margin-bottom:1rem;opacity:0.4}
+.empty-state p{font-size:0.875rem}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+@media print{.app-header,.sidebar,.btn-row,.notice{display:none!important}.app-layout{display:block}.main{max-height:none}}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div style="display:flex;align-items:center">
+    <span class="logo-mark">Pay<span>Kenya</span></span>
+    <span class="logo-tag">v2026.04</span>
+  </div>
+  <div class="header-right">
+    <strong id="hdr-month">— Select month —</strong>
+    KRA &middot; SHIF &middot; NSSF &middot; AHL
+  </div>
+</header>
+
+<div class="app-layout">
+<nav class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Calculate</div>
+    <button class="nav-item active" onclick="switchTab('calculator')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+      Single employee
+    </button>
+    <button class="nav-item" onclick="switchTab('import')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Bulk import
+    </button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Payroll</div>
+    <button class="nav-item" onclick="switchTab('employees')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Employees
+      <span class="emp-badge" id="emp-badge">0</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('payslip')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Payslip
+    </button>
+    <button class="nav-item" onclick="switchTab('summary')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Summary
+    </button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Filing</div>
+    <button class="nav-item" onclick="switchTab('export')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export files
+    </button>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- CALCULATOR -->
+<div id="tab-calculator" class="section active">
+  <div class="page-title">
+    <h1>Employee <em>calculator</em></h1>
+    <p>PAYE &middot; SHIF &middot; NSSF &middot; AHL &middot; April 2026 rates</p>
+  </div>
+  <div class="notice">SHIF 2.75% (no cap) &middot; NSSF Tier I KES 9,000 / Tier II KES 108,000 @ 6% each (Feb 2026) &middot; AHL 1.5% ee+er &middot; SHIF/AHL/NSSF reduce taxable income before PAYE is applied</div>
+  <div class="card">
+    <div class="card-header"><div class="card-dot"></div><div class="card-title">Identity</div></div>
+    <div class="form-grid cols-2">
+      <div class="field"><label>Surname</label><input id="c-surname" placeholder="e.g. Wanjiku"/></div>
+      <div class="field"><label>Other names</label><input id="c-othernames" placeholder="e.g. Jane Auma"/></div>
+    </div>
+    <div class="form-grid cols-3">
+      <div class="field"><label>KRA PIN</label><input id="c-krapin" placeholder="A012345678Z"/></div>
+      <div class="field"><label>National ID</label><input id="c-idno" placeholder="12345678"/></div>
+      <div class="field"><label>Employee ID</label><input id="c-empid" placeholder="EMP-001"/></div>
+    </div>
+    <div class="form-grid cols-2" style="margin-bottom:0">
+      <div class="field"><label>NSSF member no.</label><input id="c-nssfno" placeholder="NSSF number"/></div>
+      <div class="field"><label>SHIF member no.</label><input id="c-shifno" placeholder="SHIF/SHA number"/></div>
+    </div>
+    <div class="form-grid cols-2" style="margin-top:1rem;margin-bottom:0">
+      <div class="field"><label>Phone number</label><input id="c-phone" placeholder="0712 345 678"/></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-dot"></div><div class="card-title">Pay components</div></div>
+    <div class="form-grid cols-2">
+      <div class="field"><label>Basic pay (KES)</label><input id="c-basic" type="number" placeholder="50,000" oninput="calcPay()"/></div>
+      <div class="field"><label>Taxable allowances (KES)</label><input id="c-allowances" type="number" placeholder="0" oninput="calcPay()"/></div>
+    </div>
+    <div class="form-grid cols-2">
+      <div class="field"><label>Bonus / commission (KES)</label><input id="c-bonus" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label>HELB deduction (KES)</label><input id="c-helb" type="number" placeholder="0" oninput="calcPay()"/></div>
+    </div>
+    <div class="form-grid cols-2">
+      <div class="field"><label>Salary advance recovery (KES)</label><input id="c-advance" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label>Staff loan repayment (KES)</label><input id="c-loan" type="number" placeholder="0" oninput="calcPay()"/></div>
+    </div>
+    <div class="form-grid cols-2" style="margin-bottom:0">
+      <div class="field"><label>NSSF scheme</label><select id="c-nssf-type" onchange="calcPay()"><option value="new">New rates — Tier I + II (Feb 2026)</option><option value="old">Old flat — KES 200</option></select></div>
+      <div class="field"><label>Payroll month</label><input id="c-month" placeholder="e.g. April 2026" oninput="document.getElementById('hdr-month').textContent=this.value||'— Select month —'"/></div>
+    </div>
+  </div>
+  <div id="results" style="display:none">
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-label">Gross pay</div><div class="metric-value" id="r-gross">—</div></div>
+      <div class="metric red"><div class="metric-label">PAYE</div><div class="metric-value" id="r-paye">—</div></div>
+      <div class="metric red"><div class="metric-label">SHIF</div><div class="metric-value" id="r-shif">—</div></div>
+      <div class="metric red"><div class="metric-label">NSSF</div><div class="metric-value" id="r-nssf">—</div></div>
+      <div class="metric red"><div class="metric-label">AHL</div><div class="metric-value" id="r-ahl">—</div></div>
+      <div class="metric amber"><div class="metric-label">Loan/Adv</div><div class="metric-value" id="r-loan">—</div></div>
+      <div class="metric green"><div class="metric-label">Net pay</div><div class="metric-value" id="r-net">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-dot"></div><div class="card-title">PAYE computation</div></div>
+      <table class="data-table">
+        <tr><td class="muted">Gross pay</td><td class="mono" id="pt-gross">—</td></tr>
+        <tr><td class="muted">Less: SHIF (pre-PAYE)</td><td class="mono" id="pt-shif">—</td></tr>
+        <tr><td class="muted">Less: AHL employee (pre-PAYE)</td><td class="mono" id="pt-ahl">—</td></tr>
+        <tr><td class="muted">Less: NSSF employee (pre-PAYE)</td><td class="mono" id="pt-nssf">—</td></tr>
+        <tr class="total-row"><td>Taxable income</td><td class="mono" id="pt-taxable">—</td></tr>
+      </table>
+      <div style="margin-top:1.25rem">
+        <div style="font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--amber);margin-bottom:8px">Tax bands applied</div>
+        <table class="data-table"><thead><tr><th>Band</th><th>Rate</th><th>Tax</th></tr></thead><tbody id="paye-table"></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-dot"></div><div class="card-title">NSSF breakdown</div></div>
+      <table class="data-table" id="nssf-table"></table>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addEmployee()">Add to payroll &rarr;</button>
+      <button class="btn btn-secondary" onclick="viewPayslip()">View payslip</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT -->
+<div id="tab-import" class="section">
+  <div class="page-title"><h1>Bulk <em>import</em></h1><p>Upload CSV or Excel — unlimited employees</p></div>
+  <div class="card">
+    <div class="card-header"><div class="card-dot"></div><div class="card-title">Download template first</div></div>
+    <p style="font-size:0.825rem;color:var(--white-dim);margin-bottom:1rem">Required: <span style="color:var(--amber);font-family:var(--font-mono);font-size:0.75rem">Surname, Other_Names, Basic</span>. Optional: KRA_PIN, ID_No, NSSF_No, SHIF_No, Allowances, Bonus, HELB, Advance, Loan, NSSF_Type, Month.</p>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-secondary" onclick="downloadTemplate('csv')">CSV template</button>
+      <button class="btn btn-secondary" onclick="downloadTemplate('xlsx')">Excel template</button>
+    </div>
+  </div>
+  <div class="divider">or upload your filled file</div>
+  <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+    <div class="drop-zone-icon">&#8679;</div>
+    <p>Click to browse or drag and drop</p>
+    <small>.CSV &nbsp;&middot;&nbsp; .XLSX &nbsp;&middot;&nbsp; .XLS</small>
+  </div>
+  <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFileInput(event)"/>
+  <div class="import-errors" id="import-errors"></div>
+  <div id="import-preview" style="display:none">
+    <div class="card">
+      <div class="card-header"><div class="card-dot"></div><div class="card-title">Preview</div></div>
+      <div id="preview-table-wrap" style="overflow-x:auto;font-size:0.75rem"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="confirmImport()">Import all &rarr;</button>
+      <button class="btn btn-ghost" onclick="cancelImport()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOYEES -->
+<div id="tab-employees" class="section">
+  <div class="page-title"><h1>Payroll <em>roster</em></h1><p id="emp-subtitle">0 employees &middot; click any row for payslip</p></div>
+  <div class="card"><div id="emp-list"><div class="empty-state"><div class="empty-state-icon">&#128101;</div><p>No employees yet. Add via Calculator or Bulk Import.</p></div></div></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="switchTab('export')">Export files &rarr;</button>
+    <button class="btn btn-secondary" onclick="clearAll()">Clear roster</button>
+  </div>
+</div>
+
+<!-- PAYSLIP -->
+<div id="tab-payslip" class="section">
+  <div class="page-title"><h1>Employee <em>payslip</em></h1><p>Printable &middot; PDF-ready</p></div>
+  <div id="payslip-empty" class="card"><div class="empty-state"><div class="empty-state-icon">&#128196;</div><p>No employee selected. Go to Employees and click a name.</p></div></div>
+  <div id="payslip-view"></div>
+  <div class="btn-row" id="payslip-btns" style="display:none">
+    <button class="btn btn-primary" onclick="window.print()">Print / save PDF</button>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div id="tab-summary" class="section">
+  <div class="page-title"><h1>Payroll <em>summary</em></h1><p>Totals and statutory remittances</p></div>
+  <div id="summary-content"><div class="card"><div class="empty-state"><div class="empty-state-icon">&#128202;</div><p>Add employees to see payroll summary.</p></div></div></div>
+</div>
+
+<!-- EXPORT -->
+<div id="tab-export" class="section">
+  <div class="page-title"><h1>Filing <em>exports</em></h1><p>KRA &middot; NSSF &middot; SHIF &mdash; portal-ready formats</p></div>
+  <div class="notice">Ensure all employees are loaded before exporting. KRA PAYE CSV matches the iTax bulk upload column spec exactly.</div>
+  <div class="export-grid">
+    <button class="export-card" onclick="exportKRApaye()">
+      <div class="export-card-icon">&#127963;</div>
+      <div class="export-card-title">KRA PAYE — iTax CSV</div>
+      <div class="export-card-sub">Exact column format &middot; due 9th</div>
+    </button>
+    <button class="export-card" onclick="exportNSSF()">
+      <div class="export-card-icon">&#128203;</div>
+      <div class="export-card-title">NSSF Schedule — Excel</div>
+      <div class="export-card-sub">Tier I + II &middot; eCitizen &middot; due 15th</div>
+    </button>
+    <button class="export-card" onclick="exportSHIF()">
+      <div class="export-card-icon">&#127973;</div>
+      <div class="export-card-title">SHIF Schedule — Excel</div>
+      <div class="export-card-sub">2.75% &middot; SHA portal &middot; due 9th</div>
+    </button>
+    <button class="export-card" onclick="exportPayrollSummary()">
+      <div class="export-card-icon">&#128202;</div>
+      <div class="export-card-title">Full summary — Excel</div>
+      <div class="export-card-sub">All components &middot; employer copy</div>
+    </button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const employees=[];
+let currentCalc=null,pendingImport=[];
+const PR=2400,SR=0.0275,AR=0.015,NT1=9000,NT2=108000,NR=0.06;
+const PB=[{l:24000,r:.10},{l:8333,r:.25},{l:467667,r:.30},{l:300000,r:.325},{l:Infinity,r:.35}];
+const BS=[0,24000,32333,500000,800000];
+function fmt(n){return 'KES '+Math.round(n).toLocaleString();}
+function fmtN(n){return '&ndash; KES '+Math.round(n).toLocaleString();}
+function n2(n){return Math.round((+n||0)*100)/100;}
+function calcPAYE(t){let tax=0,rem=t,rows=[];for(let i=0;i<PB.length;i++){if(rem<=0)break;const s=Math.min(rem,PB[i].l),tx=s*PB[i].r;if(s>0)rows.push({from:BS[i]+1,to:BS[i]+s,rate:PB[i].r,tax:tx});tax+=tx;rem-=s;}return{paye:Math.max(0,tax-PR),rows,grossTax:tax};}
+function calcNSSF(g,type){if(type==='old')return{employee:200,employer:200,rows:[{label:'Flat contribution (old scheme)',ee:200,er:200}]};const t1=Math.min(g,NT1)*NR,t2=Math.min(Math.max(g-NT1,0),NT2-NT1)*NR;return{employee:t1+t2,employer:t1+t2,rows:[{label:'Tier I &mdash; 6% on first KES 9,000',ee:t1,er:t1},{label:'Tier II &mdash; 6% on KES 9,001&ndash;108,000',ee:t2,er:t2}]};}
+function compute(d){const basic=+d.basic||0,all=+d.allowances||0,bon=+d.bonus||0,helb=+d.helb||0,adv=+d.advance||0,loan=+d.loan||0,type=d.nssfType||'new',gross=basic+all+bon,shif=gross*SR,ahl_ee=gross*AR,ahl_er=gross*AR,nssf=calcNSSF(gross,type),ti=Math.max(0,gross-shif-ahl_ee-nssf.employee),{paye,rows,grossTax}=calcPAYE(ti),stat=paye+shif+nssf.employee+ahl_ee+helb,tot=stat+adv+loan;return{...d,basic,allowances:all,bonus:bon,helb,advance:adv,loan,gross,shif,ahl_ee,ahl_er,nssf,taxableIncome:ti,paye,grossTax,rows,statutoryDeductions:stat,totalDeductions:tot,net:gross-tot};}
+
+function calcPay(){
+  const basic=parseFloat(document.getElementById('c-basic').value)||0;
+  if(!basic){document.getElementById('results').style.display='none';return;}
+  const data={surname:document.getElementById('c-surname').value.trim()||'Employee',othernames:document.getElementById('c-othernames').value.trim()||'',krapin:document.getElementById('c-krapin').value.trim()||'',idno:document.getElementById('c-idno').value.trim()||'',empid:document.getElementById('c-empid').value.trim()||'',nssfno:document.getElementById('c-nssfno').value.trim()||'',shifno:document.getElementById('c-shifno').value.trim()||'',phone:document.getElementById('c-phone').value.trim()||'',month:document.getElementById('c-month').value.trim()||'',basic,allowances:parseFloat(document.getElementById('c-allowances').value)||0,bonus:parseFloat(document.getElementById('c-bonus').value)||0,helb:parseFloat(document.getElementById('c-helb').value)||0,advance:parseFloat(document.getElementById('c-advance').value)||0,loan:parseFloat(document.getElementById('c-loan').value)||0,nssfType:document.getElementById('c-nssf-type').value};
+  const e=compute(data);currentCalc=e;
+  document.getElementById('results').style.display='block';
+  document.getElementById('r-gross').textContent=fmt(e.gross);
+  document.getElementById('r-paye').textContent=fmt(e.paye);
+  document.getElementById('r-shif').textContent=fmt(e.shif);
+  document.getElementById('r-nssf').textContent=fmt(e.nssf.employee);
+  document.getElementById('r-ahl').textContent=fmt(e.ahl_ee);
+  document.getElementById('r-loan').textContent=fmt(e.advance+e.loan);
+  document.getElementById('r-net').textContent=fmt(e.net);
+  document.getElementById('pt-gross').textContent=fmt(e.gross);
+  document.getElementById('pt-shif').innerHTML=fmtN(e.shif);
+  document.getElementById('pt-ahl').innerHTML=fmtN(e.ahl_ee);
+  document.getElementById('pt-nssf').innerHTML=fmtN(e.nssf.employee);
+  document.getElementById('pt-taxable').textContent=fmt(e.taxableIncome);
+  document.getElementById('paye-table').innerHTML=e.rows.map(r=>`<tr><td class="muted mono">KES ${Math.round(r.from).toLocaleString()} &ndash; ${Math.round(r.to).toLocaleString()}</td><td class="mono">${(r.rate*100).toFixed(1)}%</td><td class="mono">${fmt(r.tax)}</td></tr>`).join('')+`<tr><td class="muted">Gross tax</td><td></td><td class="mono">${fmt(e.grossTax)}</td></tr><tr><td class="muted">Personal relief</td><td></td><td class="mono">&ndash; KES 2,400</td></tr><tr class="total-row"><td>PAYE payable</td><td></td><td class="mono">${fmt(e.paye)}</td></tr>`;
+  document.getElementById('nssf-table').innerHTML='<thead><tr><th>Component</th><th>Employee</th><th>Employer</th></tr></thead><tbody>'+e.nssf.rows.map(r=>`<tr><td class="muted">${r.label}</td><td class="mono">${fmt(r.ee)}</td><td class="mono">${fmt(r.er)}</td></tr>`).join('')+`<tr class="total-row"><td>Total NSSF</td><td class="mono">${fmt(e.nssf.employee)}</td><td class="mono">${fmt(e.nssf.employer)}</td></tr></tbody>`;
+}
+
+function addEmployee(){
+  if(!currentCalc){alert('Run a calculation first.');return;}
+  const idx=employees.findIndex(x=>(x.krapin&&x.krapin===currentCalc.krapin)||(x.surname===currentCalc.surname&&x.othernames===currentCalc.othernames));
+  if(idx>=0)employees[idx]={...currentCalc};else employees.push({...currentCalc});
+  renderEmployees();renderSummary();switchTab('employees');
+}
+
+const TH=['Surname','Other_Names','KRA_PIN','ID_No','Emp_ID','NSSF_No','SHIF_No','Phone','Basic','Allowances','Bonus','HELB','Advance','Loan','NSSF_Type','Month'];
+const TX=[['Wanjiku','Jane Auma','A012345678Z','12345678','EMP-001','NS123456','SH789012','0712345678',80000,5000,10000,2000,3000,2000,'new','April 2026'],['Kamau','John Mwangi','A098765432B','87654321','EMP-002','','','0798765432',50000,0,0,0,0,0,'new','April 2026']];
+function downloadTemplate(type){const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet([TH,...TX]);XLSX.utils.book_append_sheet(wb,ws,'Payroll');if(type==='csv'){const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(XLSX.utils.sheet_to_csv(ws));a.download='payroll_template.csv';a.click();}else XLSX.writeFile(wb,'payroll_template.xlsx');}
+function handleDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)parseFile(f);}
+function handleFileInput(e){const f=e.target.files[0];if(f)parseFile(f);}
+function parseFile(file){const errEl=document.getElementById('import-errors');errEl.style.display='none';const ext=file.name.split('.').pop().toLowerCase();if(!['csv','xlsx','xls'].includes(ext)){showErr('Unsupported file. Use .csv, .xlsx or .xls');return;}const r=new FileReader();r.onload=ev=>{try{const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});processRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''}));}catch(err){showErr('Could not read file: '+err.message);}};r.readAsArrayBuffer(file);}
+function nh(h){return String(h).trim().toLowerCase().replace(/[\s_\-]+/g,'');}
+const AL={surname:['surname','lastname'],othernames:['othernames','othername','givennames','name'],krapin:['krapin','pin','kra'],idno:['idno','id','nationalid'],empid:['empid','employeeid'],nssfno:['nssfno','nssf'],shifno:['shifno','shif','sha'],phone:['phone','phonenumber','mobile','tel','telephone'],basic:['basic','basicsalary','basepay','totalcashpay'],allowances:['allowances','allowance'],bonus:['bonus','commission'],helb:['helb'],advance:['advance','salaryadvance'],loan:['loan','loanrepayment'],nssftype:['nssftype'],month:['month','period']};
+function processRows(rows){if(!rows||rows.length<2){showErr('File has no data rows.');return;}const hMap={};rows[0].forEach((h,i)=>{const n=nh(h);for(const[k,list]of Object.entries(AL)){if(list.includes(n))hMap[k]=i;}});if(hMap.surname===undefined&&hMap.basic===undefined){showErr('Required columns not found.\nExpected: Surname, Basic');return;}const parsed=[],errors=[];for(let i=1;i<rows.length;i++){const r=rows[i];if(r.every(c=>c===''||c===null||c===undefined))continue;const surname=hMap.surname!==undefined?String(r[hMap.surname]||'').trim():'';const basic=parseFloat(r[hMap.basic])||0;if(!surname){errors.push(`Row ${i+1}: missing name`);continue;}if(!basic){errors.push(`Row ${i+1} (${surname}): Basic is 0 or missing`);continue;}parsed.push({surname,othernames:hMap.othernames!==undefined?String(r[hMap.othernames]||'').trim():'',basic,krapin:hMap.krapin!==undefined?String(r[hMap.krapin]||'').trim():'',idno:hMap.idno!==undefined?String(r[hMap.idno]||'').trim():'',empid:hMap.empid!==undefined?String(r[hMap.empid]||'').trim():'',nssfno:hMap.nssfno!==undefined?String(r[hMap.nssfno]||'').trim():'',shifno:hMap.shifno!==undefined?String(r[hMap.shifno]||'').trim():'',phone:hMap.phone!==undefined?String(r[hMap.phone]||'').trim():'',allowances:hMap.allowances!==undefined?parseFloat(r[hMap.allowances])||0:0,bonus:hMap.bonus!==undefined?parseFloat(r[hMap.bonus])||0:0,helb:hMap.helb!==undefined?parseFloat(r[hMap.helb])||0:0,advance:hMap.advance!==undefined?parseFloat(r[hMap.advance])||0:0,loan:hMap.loan!==undefined?parseFloat(r[hMap.loan])||0:0,nssfType:hMap.nssftype!==undefined&&String(r[hMap.nssftype]).toLowerCase()==='old'?'old':'new',month:hMap.month!==undefined?String(r[hMap.month]||'').trim():''});}
+if(errors.length)showErr('Skipped:\n'+errors.join('\n'));if(!parsed.length){showErr('No valid rows found.');return;}pendingImport=parsed;document.getElementById('preview-table-wrap').innerHTML='<table class="data-table"><thead><tr><th>Surname</th><th>Other Names</th><th>KRA PIN</th><th>Basic</th><th>Bonus</th><th>Advance</th><th>Loan</th></tr></thead><tbody>'+parsed.map(e=>`<tr><td>${e.surname}</td><td>${e.othernames||'&mdash;'}</td><td class="mono">${e.krapin||'&mdash;'}</td><td class="mono">${fmt(e.basic)}</td><td class="mono">${fmt(e.bonus)}</td><td class="mono">${fmt(e.advance)}</td><td class="mono">${fmt(e.loan)}</td></tr>`).join('')+'</tbody></table>';document.getElementById('import-preview').style.display='block';}
+function confirmImport(){let a=0,u=0;pendingImport.forEach(d=>{const e=compute(d);const idx=employees.findIndex(x=>(x.krapin&&x.krapin===e.krapin)||(x.surname===e.surname&&x.othernames===e.othernames));if(idx>=0){employees[idx]=e;u++;}else{employees.push(e);a++;}});pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';renderEmployees();renderSummary();switchTab('employees');setTimeout(()=>alert(`Imported: ${a} new, ${u} updated.`),100);}
+function cancelImport(){pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';}
+function showErr(m){const el=document.getElementById('import-errors');el.style.display='block';el.textContent=m;}
+
+function renderEmployees(){
+  const el=document.getElementById('emp-list'),badge=document.getElementById('emp-badge'),sub=document.getElementById('emp-subtitle');
+  badge.textContent=employees.length;badge.classList.toggle('show',employees.length>0);
+  sub.textContent=`${employees.length} employee${employees.length!==1?'s':''} \u00b7 click any row for payslip`;
+  if(!employees.length){el.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#128101;</div><p>No employees yet.</p></div>';return;}
+  el.innerHTML=employees.map((e,i)=>`<div class="emp-item" onclick="showPayslip(${i})"><div class="emp-avatar">${e.surname.slice(0,1)}${(e.othernames||'').slice(0,1)}</div><div class="emp-details"><div class="emp-name">${e.surname}, ${e.othernames||''}${e.bonus?'<span class="badge badge-amber">BONUS</span>':''}${(e.advance+e.loan)>0?'<span class="badge badge-red">LOAN</span>':''}</div><div class="emp-meta">${e.krapin||'No PIN'} &nbsp;&middot;&nbsp; ${e.idno?'ID: '+e.idno+' &nbsp;&middot;&nbsp; ':''}Gross: ${fmt(e.gross)}${e.month?' &nbsp;&middot;&nbsp; '+e.month:''}</div></div><div><div class="emp-net">${fmt(e.net)}</div><div class="emp-net-label">net pay</div></div></div>`).join('');
+}
+
+function showPayslip(i){renderPayslip(employees[i]);switchTab('payslip');}
+function viewPayslip(){if(!currentCalc)return;renderPayslip(currentCalc);switchTab('payslip');}
+function renderPayslip(e){
+  document.getElementById('payslip-empty').style.display='none';
+  document.getElementById('payslip-btns').style.display='flex';
+  document.getElementById('payslip-view').innerHTML=`<div class="payslip-wrap"><div class="payslip-header"><div><div style="font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--white-dim);margin-bottom:8px">Payslip</div><div class="payslip-name">${e.surname},<br>${e.othernames||''}</div><div class="payslip-meta" style="margin-top:10px">${e.krapin?'KRA PIN: '+e.krapin+'<br>':''}${e.idno?'ID No: '+e.idno+'<br>':''}${e.empid?'Emp ID: '+e.empid+'<br>':''}${e.nssfno?'NSSF: '+e.nssfno+'<br>':''}${e.shifno?'SHIF: '+e.shifno:''}</div></div><div class="payslip-month">${e.month||'Month N/A'}</div></div><div class="payslip-body"><div class="payslip-section"><div class="payslip-section-label">Earnings</div><table class="data-table"><tr><td class="muted">Basic pay</td><td class="mono">${fmt(e.basic)}</td></tr>${e.allowances?`<tr><td class="muted">Allowances</td><td class="mono">${fmt(e.allowances)}</td></tr>`:''}${e.bonus?`<tr><td class="muted">Bonus / commission</td><td class="mono">${fmt(e.bonus)}</td></tr>`:''}<tr class="total-row"><td>Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">Statutory deductions</div><table class="data-table"><tr><td class="muted">PAYE (income tax)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.paye)}</td></tr><tr><td class="muted">SHIF (2.75%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.shif)}</td></tr><tr><td class="muted">NSSF employee share</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.employee)}</td></tr><tr><td class="muted">Affordable Housing Levy (1.5%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.ahl_ee)}</td></tr>${e.helb?`<tr><td class="muted">HELB repayment</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.helb)}</td></tr>`:''}<tr class="total-row"><td>Total statutory</td><td class="mono">&ndash; ${fmt(e.statutoryDeductions)}</td></tr></table></div>${(e.advance+e.loan)?`<div class="payslip-section"><div class="payslip-section-label">Loan &amp; advance recovery</div><table class="data-table">${e.advance?`<tr><td class="muted">Salary advance recovery</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.advance)}</td></tr>`:''}${e.loan?`<tr><td class="muted">Staff loan repayment</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.loan)}</td></tr>`:''}</table></div>`:''}<div class="payslip-section"><div class="payslip-section-label">Employer contributions</div><table class="data-table"><tr><td class="muted">NSSF employer share</td><td class="mono">${fmt(e.nssf.employer)}</td></tr><tr><td class="muted">AHL employer share (1.5%)</td><td class="mono">${fmt(e.ahl_er)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">PAYE computation</div><table class="data-table"><tr><td class="muted">Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr><tr><td class="muted">Pre-PAYE deductions (SHIF+AHL+NSSF)</td><td class="mono">&ndash; ${fmt(e.shif+e.ahl_ee+e.nssf.employee)}</td></tr><tr><td class="muted">Taxable income</td><td class="mono">${fmt(e.taxableIncome)}</td></tr><tr><td class="muted">Personal relief</td><td class="mono">&ndash; KES 2,400</td></tr></table></div><div class="payslip-net"><div><div class="payslip-net-label">Net pay</div></div><div class="payslip-net-value">${fmt(e.net)}</div></div></div></div>`;
+}
+
+function renderSummary(){
+  const el=document.getElementById('summary-content');
+  if(!employees.length){el.innerHTML='<div class="card"><div class="empty-state"><div class="empty-state-icon">&#128202;</div><p>Add employees to see summary.</p></div></div>';return;}
+  const t=employees.reduce((a,e)=>({gross:a.gross+e.gross,paye:a.paye+e.paye,shif:a.shif+e.shif,nssf_ee:a.nssf_ee+e.nssf.employee,nssf_er:a.nssf_er+e.nssf.employer,ahl_ee:a.ahl_ee+e.ahl_ee,ahl_er:a.ahl_er+e.ahl_er,helb:a.helb+(e.helb||0),advance:a.advance+(e.advance||0),loan:a.loan+(e.loan||0),net:a.net+e.net}),{gross:0,paye:0,shif:0,nssf_ee:0,nssf_er:0,ahl_ee:0,ahl_er:0,helb:0,advance:0,loan:0,net:0});
+  const totalRem=t.paye+t.shif+t.nssf_ee+t.nssf_er+t.ahl_ee+t.ahl_er+t.helb;
+  el.innerHTML=`<div class="metrics-row"><div class="metric"><div class="metric-label">Employees</div><div class="metric-value">${employees.length}</div></div><div class="metric"><div class="metric-label">Total gross</div><div class="metric-value">${fmt(t.gross)}</div></div><div class="metric red"><div class="metric-label">Total PAYE</div><div class="metric-value">${fmt(t.paye)}</div></div><div class="metric green"><div class="metric-label">Total net pay</div><div class="metric-value">${fmt(t.net)}</div></div></div><div class="card"><div class="card-header"><div class="card-dot"></div><div class="card-title">Statutory remittances</div></div><div class="rem-row"><span>PAYE &rarr; KRA iTax<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.paye)}</span></div><div class="rem-row"><span>SHIF &rarr; SHA portal<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.shif)}</span></div><div class="rem-row"><span>NSSF ee+er &rarr; eCitizen<span class="rem-due">15th</span></span><span class="rem-amount">${fmt(t.nssf_ee+t.nssf_er)}</span></div><div class="rem-row"><span>AHL ee+er &rarr; Housing Fund<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.ahl_ee+t.ahl_er)}</span></div>${t.helb?`<div class="rem-row"><span>HELB &rarr; HELB Authority<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.helb)}</span></div>`:''}<div class="rem-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:12px;font-weight:600"><span>Total remittances</span><span class="rem-amount">${fmt(totalRem)}</span></div></div>${(t.advance+t.loan)?`<div class="card"><div class="card-header"><div class="card-dot"></div><div class="card-title">Loan &amp; advance recoveries</div></div>${t.advance?`<div class="rem-row"><span>Advance recovery</span><span class="rem-amount">${fmt(t.advance)}</span></div>`:''}${t.loan?`<div class="rem-row"><span>Loan repayments</span><span class="rem-amount">${fmt(t.loan)}</span></div>`:''}<div class="rem-row" style="font-weight:600"><span>Total</span><span class="rem-amount">${fmt(t.advance+t.loan)}</span></div></div>`:''}`;
+}
+
+function exportKRApaye(){if(!employees.length){alert('No employees loaded.');return;}const rows=employees.map(e=>[e.krapin||'',`${e.surname} ${e.othernames||''}`.trim(),'Resident','Primary Employee','NO','',n2(e.gross),0,0,0,'Benefit Not given','',0,'',n2(e.shif),n2(e.nssf.employee),0,0,0,n2(e.ahl_ee),'',2400,'','',n2(e.paye)]);const csv=rows.map(r=>r.map(v=>typeof v==='string'&&v.includes(',')? `"${v}"` : v).join(',')).join('\r\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`KRA_PAYE_iTax_${(employees[0].month||'payroll').replace(/ /g,'_')}.csv`;a.click();}
+
+function col(n){return XLSX.utils.encode_col(n);}
+function xs(ws,cell,val,bold,bg,fc,nf,al){if(!ws[cell])ws[cell]={};const isN=typeof val==='number';ws[cell].v=val;ws[cell].t=isN?'n':'s';if(nf)ws[cell].z=nf;ws[cell].s={font:{bold:!!bold,color:{rgb:fc||'000000'},name:'Arial',sz:10},fill:{fgColor:{rgb:bg||'FFFFFF'},patternType:'solid'},alignment:{horizontal:al||(isN?'right':'left'),vertical:'center'},border:{top:{style:'thin'},bottom:{style:'thin'},left:{style:'thin'},right:{style:'thin'}}};}
+function xh(ws,c,v){xs(ws,c,v,true,'1C3A5E','FFFFFF',null,'center');}
+function xn(ws,c,v,b,bg){xs(ws,c,v,b,bg,'000000','#,##0.00','right');}
+function xstr(ws,c,v,b,bg){xs(ws,c,v,b,bg||'FFFFFF','000000',null,'left');}
+
+function exportNSSF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const HDR='1C3A5E';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','NSSF NO','GROSS PAY','VOLUNTARY'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.nssfno||'');xn(ws,col(6)+r,e.gross);xn(ws,col(7)+r,0);});const tr=employees.length+2;['','TOTALS','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(6)+tr,employees.reduce((a,e)=>a+e.gross,0),true,'E2EFDA');xn(ws,col(7)+tr,0,true,'E2EFDA');ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:16},{wch:14},{wch:12}];ws['!rows']=[{hpt:22},...Array(employees.length+1).fill({hpt:18})];ws['!ref']=`A1:${col(7)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'NSSF');XLSX.writeFile(wb,`NSSF_Schedule_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+
+function exportSHIF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const cols=['PAYROLL NUMBER','FIRSTNAME','LASTNAME','IDENTITY TYPE','ID NO','KRA PIN','SHIF NO','CONTRIBUTION AMOUNT','PHONE'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.othernames||'');xstr(ws,col(2)+r,e.surname||'');xstr(ws,col(3)+r,'National ID');xstr(ws,col(4)+r,e.idno||'');xstr(ws,col(5)+r,e.krapin||'');xstr(ws,col(6)+r,e.shifno||'');xn(ws,col(7)+r,e.shif);xstr(ws,col(8)+r,e.phone||'');});const tr=employees.length+2;['','TOTALS','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(7)+tr,employees.reduce((a,e)=>a+e.shif,0),true,'E2EFDA');ws['!cols']=[{wch:16},{wch:20},{wch:16},{wch:14},{wch:14},{wch:16},{wch:22},{wch:20},{wch:14}];ws['!rows']=[{hpt:22},...Array(employees.length+1).fill({hpt:18})];ws['!ref']=`A1:${col(8)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'SHIF');XLSX.writeFile(wb,`SHIF_Schedule_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+
+function exportPayrollSummary(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const headers=['#','Surname','Other Names','KRA PIN','ID No','Emp ID','NSSF No','SHIF No','Basic','Allowances','Bonus','Gross','PAYE','SHIF','NSSF(ee)','AHL(ee)','HELB','Advance','Loan','Total Deductions','Net Pay'],nc=headers.length;const mg=[{s:{r:0,c:0},e:{r:0,c:nc-1}},{s:{r:1,c:0},e:{r:1,c:nc-1}}];xs(ws,'A1',`MONTHLY PAYROLL SUMMARY — ${month}`,true,'1C3A5E','FFFFFF',null,'center');xs(ws,'A2','Employer copy — confidential',false,'F3F2EF','555555',null,'center');headers.forEach((h,i)=>xh(ws,col(i)+'3',h));employees.forEach((e,i)=>{const r=i+4;[i+1,e.surname,e.othernames||'',e.krapin||'',e.idno||'',e.empid||'',e.nssfno||'',e.shifno||'',e.basic,e.allowances||0,e.bonus||0,e.gross,e.paye,e.shif,e.nssf.employee,e.ahl_ee,e.helb||0,e.advance||0,e.loan||0,e.totalDeductions,e.net].forEach((v,j)=>j<8?xstr(ws,col(j)+r,v):xn(ws,col(j)+r,v));});const tr=employees.length+4;[0,1,2,3,4,5,6,7].forEach(j=>xstr(ws,col(j)+tr,j===1?'TOTALS':'',true,'E2EFDA'));const ks=['basic','allowances','bonus','gross','paye','shif','nssf_ee','ahl_ee','helb','advance','loan','totalDeductions','net'];for(let j=8;j<nc;j++){const k=ks[j-8];const total=employees.reduce((a,e)=>a+({basic:e.basic,allowances:e.allowances||0,bonus:e.bonus||0,gross:e.gross,paye:e.paye,shif:e.shif,nssf_ee:e.nssf.employee,ahl_ee:e.ahl_ee,helb:e.helb||0,advance:e.advance||0,loan:e.loan||0,totalDeductions:e.totalDeductions,net:e.net}[k]||0),0);xn(ws,col(j)+tr,total,true,'E2EFDA');}ws['!merges']=mg;ws['!cols']=[{wch:4},{wch:16},{wch:16},{wch:14},{wch:12},{wch:10},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:13},{wch:12},{wch:12},{wch:11},{wch:11},{wch:11},{wch:11},{wch:11},{wch:15},{wch:13}];ws['!rows']=[{hpt:26},{hpt:18},{hpt:36},...Array(employees.length+2).fill({hpt:18})];ws['!ref']=`A1:${col(nc-1)}${tr+1}`;XLSX.utils.book_append_sheet(wb,ws,'Payroll Summary');XLSX.writeFile(wb,`Payroll_Summary_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+
+function clearAll(){if(!employees.length)return;if(confirm('Clear all employees?')){employees.length=0;renderEmployees();renderSummary();}}
+function switchTab(name){const names=['calculator','import','employees','payslip','summary','export'];document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',names[i]===name));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');}
+</script>
+</body>
+</html>
