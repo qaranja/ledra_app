@@ -12,8 +12,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px}
 body{background:var(--navy);color:var(--white);font-family:var(--font-body);font-weight:400;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
-.app-header{background:var(--navy-mid);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;height:60px;position:sticky;top:0;z-index:100}
-.logo-mark{font-family:var(--font-serif);font-size:1.4rem;color:var(--white);letter-spacing:-0.02em}
+.app-header{background:var(--navy-mid);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo-mark{font-family:var(--font-serif);font-size:1.75rem;color:var(--white);letter-spacing:-0.02em}
 .logo-mark span{color:var(--amber)}
 .logo-tag{font-size:0.65rem;color:var(--white-dim);font-family:var(--font-mono);letter-spacing:0.15em;text-transform:uppercase;border:1px solid var(--border);padding:1px 6px;border-radius:3px;margin-left:8px}
 .header-right{font-size:0.7rem;font-family:var(--font-mono);color:var(--white-dim);text-align:right}
@@ -107,12 +107,51 @@ select option{background:var(--navy-mid)}
 .drop-zone-icon{font-size:2rem;margin-bottom:0.75rem;opacity:0.5}
 .drop-zone p{color:var(--white-dim);font-size:0.875rem;margin-bottom:4px}
 .drop-zone small{font-family:var(--font-mono);font-size:0.65rem;color:rgba(245,240,232,0.3);letter-spacing:0.08em}
-.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
-.export-card{background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;cursor:pointer;transition:all 0.2s;text-align:left;font-family:var(--font-body)}
+.modal-overlay{position:fixed;inset:0;background:rgba(28,25,23,0.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px)}
+.modal{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:420px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:var(--navy-light)}
+.modal-title{font-family:var(--font-serif);font-size:1.3rem;color:var(--white)}
+.modal-subtitle{font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim);margin-top:3px}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:8px}
+/* ── RATING PILL + MODAL ────────────────────────────────── */
+.rate-pill{display:flex;align-items:center;gap:8px;background:var(--navy-light);border:1px solid var(--border);border-radius:999px;padding:6px 12px 6px 10px;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
+.rate-pill:hover{border-color:var(--amber);background:var(--navy-pale)}
+.rate-pill-stars{color:var(--amber);font-size:0.85rem;letter-spacing:-1px}
+.rate-pill-score{font-family:var(--font-mono);font-size:0.8rem;font-weight:600;color:var(--white)}
+.rate-pill-count{font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim)}
+.rate-pill-label{font-size:0.7rem;color:var(--white-dim);border-left:1px solid var(--border);padding-left:8px;margin-left:2px;letter-spacing:0.04em;text-transform:uppercase}
+.rating-stars-input{display:flex;gap:6px;justify-content:center;margin:1rem 0}
+.rating-stars-input span{font-size:2rem;cursor:pointer;transition:transform 0.1s;line-height:1;filter:grayscale(1);opacity:0.4}
+.rating-stars-input span.active,.rating-stars-input span:hover~span{filter:none;opacity:1}
+.rating-stars-input span.active{transform:scale(1.15)}
+.rating-submitted{text-align:center;padding:1.5rem 0}
+.rating-submitted-score{font-size:2rem;margin-bottom:6px}
+.rating-submitted-msg{font-size:0.875rem;color:var(--white-dim);line-height:1.6}
+.rating-list{margin-top:1rem;display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto}
+.rating-item{background:var(--navy-pale);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.rating-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.rating-item-name{font-size:0.8rem;font-weight:600;color:var(--white)}
+.rating-item-stars{color:var(--amber);font-size:0.75rem}
+.rating-item-date{font-family:var(--font-mono);font-size:0.6rem;color:var(--white-dim)}
+.rating-item-comment{font-size:0.775rem;color:var(--white-dim);line-height:1.5;margin-top:2px}
+.paywall-amount{background:var(--amber-glow);border:1px solid rgba(180,83,9,0.2);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center}
+.paywall-amount-label{font-family:var(--font-mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-dim)}
+.paywall-amount-value{font-family:var(--font-mono);font-size:1.5rem;font-weight:500;color:var(--amber)}
+.paywall-steps{font-size:0.8rem;color:var(--white-dim);line-height:1.8;margin-bottom:1.25rem}
+.paywall-steps strong{color:var(--white);font-weight:500}
+.paywall-step-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--amber);color:var(--navy);font-size:0.6rem;font-weight:700;margin-right:6px;flex-shrink:0}
+.paywall-divider{display:flex;align-items:center;gap:8px;margin:1rem 0;font-family:var(--font-mono);font-size:0.6rem;color:var(--white-dim)}
+.paywall-divider::before,.paywall-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.unlock-badge{display:inline-flex;align-items:center;gap:6px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius);padding:6px 12px;font-family:var(--font-mono);font-size:0.7rem;color:#166534;margin-bottom:1rem}
+.paywall-error{font-family:var(--font-mono);font-size:0.7rem;color:var(--red);margin-top:6px;display:none}
+
+.export-card{background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;cursor:pointer;transition:all 0.2s;text-align:left;font-family:var(--font-body);height:100px;display:flex;flex-direction:column;justify-content:flex-start}
 .export-card:hover{border-color:var(--amber);transform:translateY(-2px);background:var(--navy-pale)}
-.export-card-icon{font-size:1.4rem;margin-bottom:8px}
+.export-card-icon{font-size:1.4rem;margin-bottom:6px;line-height:1}
 .export-card-title{font-size:0.875rem;font-weight:600;color:var(--white);margin-bottom:3px}
 .export-card-sub{font-size:0.7rem;color:var(--white-dim);font-family:var(--font-mono)}
+.export-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .notice{background:var(--navy-light);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:var(--radius);padding:10px 14px;font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim);line-height:1.7;margin-bottom:1.25rem}
 .import-errors{background:rgba(224,92,74,0.1);border:1px solid rgba(224,92,74,0.3);border-radius:var(--radius);padding:10px 14px;font-family:var(--font-mono);font-size:0.7rem;color:var(--red);line-height:1.7;margin-bottom:1rem;display:none;white-space:pre-line}
 .divider{display:flex;align-items:center;gap:12px;margin:1.25rem 0;font-family:var(--font-mono);font-size:0.6rem;color:rgba(245,240,232,0.2);letter-spacing:0.1em;text-transform:uppercase}
@@ -136,6 +175,20 @@ select option{background:var(--navy-mid)}
 .splash-bar{width:48px;height:2px;background:var(--border);border-radius:1px;margin-top:2rem;overflow:hidden}
 .splash-bar-fill{height:100%;width:0;background:var(--amber);border-radius:1px;animation:fillbar 1.8s ease forwards}
 @keyframes fillbar{to{width:100%}}
+
+.accordion{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:8px}
+.accordion-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:var(--navy-mid);transition:background 0.15s;user-select:none}
+.accordion-hdr:hover{background:var(--navy-light)}
+.accordion-hdr.open{background:var(--amber-glow)}
+.accordion-title{font-size:0.85rem;font-weight:500;color:var(--white)}
+.accordion-hdr.open .accordion-title{color:var(--amber)}
+.accordion-arrow{width:14px;height:14px;transition:transform 0.2s;color:var(--white-dim);flex-shrink:0}
+.accordion-hdr.open .accordion-arrow{transform:rotate(180deg)}
+.accordion-body{display:none;padding:12px 16px;border-top:1px solid var(--border-mid);background:var(--navy-mid)}
+.accordion-body.open{display:block}
+.country-tab-btn{padding:5px 12px;font-family:var(--font-mono);font-size:0.65rem;cursor:pointer;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--white-dim);transition:all 0.15s;letter-spacing:0.05em}
+.country-tab-btn.active{background:var(--amber);color:var(--navy);border-color:var(--amber)}
+.country-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
 @media print{.splash{display:none!important}}
 .coming-soon-banner h2{font-family:var(--font-serif);font-size:1.5rem;color:var(--white);margin-bottom:8px}
 .coming-soon-banner p{font-size:0.825rem;color:var(--white-dim);line-height:1.6}
@@ -147,7 +200,7 @@ select option{background:var(--navy-mid)}
 
 <div class="splash" id="splash">
   <div class="splash-logo">Ledja <span>Payroll</span></div>
-  <div class="splash-tagline">East Africa payroll, simplified</div>
+  <div class="splash-tagline">Built for compliance</div>
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
@@ -155,13 +208,12 @@ select option{background:var(--navy-mid)}
   <div style="display:flex;align-items:center">
     <span class="logo-mark">Ledja <span>Payroll</span></span>
   </div>
-  <select id="country-select" onchange="setCountry(this.value)" style="margin-left:auto;appearance:none;-webkit-appearance:none;background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius);color:var(--white);font-family:var(--font-mono);font-size:0.75rem;padding:6px 14px 6px 10px;cursor:pointer;outline:none;width:auto">
-    <option value="">— Select country —</option>
-    <option value="ke">🇰🇪 Kenya</option>
-    <option value="ug">🇺🇬 Uganda</option>
-    <option value="tz">🇹🇿 Tanzania</option>
-    <option value="rw">🇷🇼 Rwanda</option>
-  </select>
+  <button class="rate-pill" onclick="openRatingModal()" id="rate-pill">
+    <span class="rate-pill-stars">★★★★★</span>
+    <span class="rate-pill-score" id="pill-score">4.8</span>
+    <span class="rate-pill-count" id="pill-count">(0)</span>
+    <span class="rate-pill-label">Rate us</span>
+  </button>
 </header>
 
 <div class="app-layout">
@@ -223,11 +275,25 @@ select option{background:var(--navy-mid)}
 
 <!-- CALCULATOR -->
 <div id="tab-calculator" class="section active">
-  <div class="page-title">
-    <h1><em>Calculator</em></h1>
-    <p>PAYE &middot; SHIF &middot; NSSF &middot; AHL &middot; April 2026 rates</p>
+  <div class="page-title" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">
+    <div>
+      <h1><em>Calculator</em></h1>
+      <p id="calc-subtitle">PAYE &middot; SHIF &middot; NSSF &middot; AHL</p>
+    </div>
+    <select id="country-select" onchange="setCountry(this.value)" style="flex-shrink:0;appearance:none;-webkit-appearance:none;background:var(--navy-light);border:1px solid var(--border);border-radius:var(--radius);color:var(--white);font-family:var(--font-mono);font-size:0.75rem;padding:6px 14px 6px 10px;cursor:pointer;outline:none;width:auto;margin-top:4px">
+      <option value="">— Select country —</option>
+      <option value="ke">🇰🇪 Kenya</option>
+      <option value="ug">🇺🇬 Uganda</option>
+      <option value="tz">🇹🇿 Tanzania</option>
+      <option value="rw">🇷🇼 Rwanda</option>
+    </select>
   </div>
-  <div class="notice">SHIF 2.75% (no cap) &middot; NSSF Tier I KES 9,000 / Tier II KES 108,000 @ 6% each (Feb 2026) &middot; AHL 1.5% ee+er &middot; SHIF/AHL/NSSF reduce taxable income before PAYE is applied</div>
+
+  <!-- Hidden company inputs - populated from bulk import -->
+  <input id="c-company" type="hidden"/>
+  <input id="c-company-pin" type="hidden"/>
+
+  <div class="notice" id="calc-notice">Select a country to begin</div>
 
   <!-- Identity toggle -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
@@ -244,19 +310,19 @@ select option{background:var(--navy-mid)}
   <!-- Identity card (hidden by default) -->
   <div id="identity-card" style="display:none">
     <div class="card">
-      <div class="card-header"><div class="card-dot"></div><div class="card-title">Identity</div></div>
+      <div class="card-header"><div class="card-dot"></div><div class="card-title" id="identity-card-title">Identity</div></div>
       <div class="form-grid cols-2">
         <div class="field"><label>Surname</label><input id="c-surname" placeholder="e.g. Wanjiku"/></div>
         <div class="field"><label>Other names</label><input id="c-othernames" placeholder="e.g. Jane Auma"/></div>
       </div>
       <div class="form-grid cols-3">
-        <div class="field"><label>KRA PIN</label><input id="c-krapin" placeholder="A012345678Z"/></div>
+        <div class="field"><label id="lbl-taxpin">KRA PIN</label><input id="c-krapin" placeholder="A012345678Z"/></div>
         <div class="field"><label>National ID</label><input id="c-idno" placeholder="12345678"/></div>
         <div class="field"><label>Employee ID</label><input id="c-empid" placeholder="EMP-001"/></div>
       </div>
-      <div class="form-grid cols-2" style="margin-bottom:0">
-        <div class="field"><label>NSSF member no.</label><input id="c-nssfno" placeholder="NSSF number"/></div>
-        <div class="field"><label>SHIF member no.</label><input id="c-shifno" placeholder="SHIF/SHA number"/></div>
+      <div class="form-grid cols-2" id="social-numbers" style="margin-bottom:0">
+        <div class="field"><label id="lbl-pensionno">NSSF member no.</label><input id="c-nssfno" placeholder="NSSF number"/></div>
+        <div class="field"><label id="lbl-healthno">SHIF member no.</label><input id="c-shifno" placeholder="SHIF/SHA number"/></div>
       </div>
       <div class="form-grid cols-2" style="margin-top:1rem;margin-bottom:0">
         <div class="field"><label>Phone number</label><input id="c-phone" placeholder="0712 345 678"/></div>
@@ -267,23 +333,23 @@ select option{background:var(--navy-mid)}
   <div class="card">
     <div class="card-header"><div class="card-dot"></div><div class="card-title">Pay components</div></div>
     <div class="form-grid cols-2">
-      <div class="field"><label>Basic pay (KES)</label><input id="c-basic" type="number" placeholder="50,000" oninput="calcPay()"/></div>
-      <div class="field"><label>Taxable allowances (KES)</label><input id="c-allowances" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label id="lbl-basic">Basic pay</label><input id="c-basic" type="number" placeholder="50,000" oninput="calcPay()"/></div>
+      <div class="field"><label id="lbl-allowances">Taxable allowances</label><input id="c-allowances" type="number" placeholder="0" oninput="calcPay()"/></div>
     </div>
     <div class="form-grid cols-2">
-      <div class="field"><label>Bonus / commission (KES)</label><input id="c-bonus" type="number" placeholder="0" oninput="calcPay()"/></div>
-      <div class="field"><label>HELB deduction (KES)</label><input id="c-helb" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label id="lbl-overtime">Overtime</label><input id="c-overtime" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field" id="helb-field"><label id="lbl-helb">HELB deduction</label><input id="c-helb" type="number" placeholder="0" oninput="calcPay()"/></div>
     </div>
     <div class="form-grid cols-2">
-      <div class="field"><label>Salary advance recovery (KES)</label><input id="c-advance" type="number" placeholder="0" oninput="calcPay()"/></div>
-      <div class="field"><label>Staff loan repayment (KES)</label><input id="c-loan" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label id="lbl-bonus">Bonus / Commission</label><input id="c-bonus" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label id="lbl-advance">Salary advance recovery</label><input id="c-advance" type="number" placeholder="0" oninput="calcPay()"/></div>
     </div>
-    <div class="form-grid cols-2" style="margin-bottom:0">
-      <div class="field"><label>NSSF scheme</label><select id="c-nssf-type" onchange="calcPay()"><option value="full">Full statutory &mdash; Tier I &amp; II to NSSF</option><option value="contracted">Contracted-out &mdash; Tier I to NSSF, Tier II to pension</option><option value="old">Old scheme &mdash; flat KES 200</option></select></div>
-      <div class="field"><label>Payroll month</label><input id="c-month" placeholder="e.g. April 2026" oninput="document.getElementById('hdr-month').textContent=this.value||'— Select month —'"/></div>
+    <div class="form-grid cols-2">
+      <div class="field"><label id="lbl-loan">Staff loan repayment</label><input id="c-loan" type="number" placeholder="0" oninput="calcPay()"/></div>
     </div>
-    <div class="form-grid cols-2" id="pension-field" style="margin-top:1rem;margin-bottom:0;display:none">
-      <div class="field"><label>Pension fund member no.</label><input id="c-pensionno" placeholder="e.g. ICEA-123456"/></div>
+    <div class="form-grid cols-2" style="margin-bottom:0" id="nssf-scheme-row">
+      <div class="field"><label id="lbl-nssf-scheme">NSSF scheme</label><select id="c-nssf-type" onchange="calcPay()"><option value="full">Full statutory &mdash; Tier I &amp; II to NSSF</option><option value="contracted">Contracted-out &mdash; Tier I to NSSF, Tier II to pension</option><option value="old">Old scheme &mdash; flat KES 200</option></select></div>
+      <div class="field"><label id="lbl-month">Payroll month</label><input id="c-month" placeholder="e.g. April 2026"/></div>
     </div>
   </div>
 
@@ -291,19 +357,19 @@ select option{background:var(--navy-mid)}
     <div class="metrics-row">
       <div class="metric"><div class="metric-label">Gross pay</div><div class="metric-value" id="r-gross">—</div></div>
       <div class="metric red"><div class="metric-label">PAYE</div><div class="metric-value" id="r-paye">—</div></div>
-      <div class="metric red"><div class="metric-label" id="lbl-shif">SHIF</div><div class="metric-value" id="r-shif">—</div></div>
-      <div class="metric red"><div class="metric-label" id="lbl-nssf">NSSF</div><div class="metric-value" id="r-nssf">—</div></div>
-      <div class="metric red"><div class="metric-label" id="lbl-ahl">AHL</div><div class="metric-value" id="r-ahl">—</div></div>
-      <div class="metric amber"><div class="metric-label">Loan/Adv</div><div class="metric-value" id="r-loan">—</div></div>
+      <div class="metric red" id="metric-shif-card"><div class="metric-label" id="lbl-shif">SHIF</div><div class="metric-value" id="r-shif">—</div></div>
+      <div class="metric red" id="metric-nssf-card"><div class="metric-label" id="lbl-nssf">NSSF</div><div class="metric-value" id="r-nssf">—</div></div>
+      <div class="metric red" id="metric-ahl-card"><div class="metric-label" id="lbl-ahl">AHL</div><div class="metric-value" id="r-ahl">—</div></div>
+      <div class="metric amber" id="metric-loan-card"><div class="metric-label">HELB / Loan / Adv</div><div class="metric-value" id="r-loan">—</div></div>
       <div class="metric green"><div class="metric-label">Net pay</div><div class="metric-value" id="r-net">—</div></div>
     </div>
     <div class="card">
       <div class="card-header"><div class="card-dot"></div><div class="card-title">PAYE computation</div></div>
       <table class="data-table">
         <tr><td class="muted">Gross pay</td><td class="mono" id="pt-gross">—</td></tr>
-        <tr><td class="muted">Less: SHIF (pre-PAYE)</td><td class="mono" id="pt-shif">—</td></tr>
-        <tr><td class="muted">Less: AHL employee (pre-PAYE)</td><td class="mono" id="pt-ahl">—</td></tr>
-        <tr><td class="muted">Less: NSSF employee (pre-PAYE)</td><td class="mono" id="pt-nssf">—</td></tr>
+        <tr id="pt-row-shif"><td class="muted" id="pt-lbl-shif">Less: SHIF (pre-PAYE)</td><td class="mono" id="pt-shif">—</td></tr>
+        <tr id="pt-row-ahl"><td class="muted" id="pt-lbl-ahl">Less: AHL employee (pre-PAYE)</td><td class="mono" id="pt-ahl">—</td></tr>
+        <tr id="pt-row-nssf"><td class="muted" id="pt-lbl-nssf">Less: NSSF employee (pre-PAYE)</td><td class="mono" id="pt-nssf">—</td></tr>
         <tr class="total-row"><td>Taxable income</td><td class="mono" id="pt-taxable">—</td></tr>
       </table>
       <div style="margin-top:1.25rem">
@@ -312,7 +378,7 @@ select option{background:var(--navy-mid)}
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><div class="card-dot"></div><div class="card-title">NSSF breakdown</div></div>
+      <div class="card-header"><div class="card-dot"></div><div class="card-title">Statutory deductions breakdown</div></div>
       <table class="data-table" id="nssf-table"></table>
     </div>
     <div class="btn-row" id="calc-action-btns" style="display:none">
@@ -327,7 +393,7 @@ select option{background:var(--navy-mid)}
   <div class="page-title"><h1>Bulk <em>import</em></h1><p>Upload CSV or Excel — unlimited employees</p></div>
   <div class="card">
     <div class="card-header"><div class="card-dot"></div><div class="card-title">Download template first</div></div>
-    <p style="font-size:0.825rem;color:var(--white-dim);margin-bottom:1rem">Required: <span style="color:var(--amber);font-family:var(--font-mono);font-size:0.75rem">Surname, Basic</span>. Recommended: Emp_No, KRA_PIN, ID_No, NSSF_No, SHIF_No, Phone. NSSF_Type values: <span style="font-family:var(--font-mono);color:var(--amber)">full</span> / <span style="font-family:var(--font-mono);color:var(--amber)">contracted</span> / <span style="font-family:var(--font-mono);color:var(--amber)">old</span>.</p>
+    <p style="font-size:0.825rem;color:var(--white-dim);margin-bottom:1rem">Required: <span style="color:var(--amber);font-family:var(--font-mono);font-size:0.75rem">Surname, Basic</span>. Optional: Emp_No, KRA_PIN, ID_No, NSSF_No, SHIF_No, Phone, Allowances, Overtime, Bonus, HELB, Advance, Loan. NSSF_Type: <span style="font-family:var(--font-mono);color:var(--amber)">full</span> / <span style="font-family:var(--font-mono);color:var(--amber)">contracted</span> / <span style="font-family:var(--font-mono);color:var(--amber)">old</span>. Company name &amp; PIN are set from the metadata rows at the top of the file.</p>
     <div class="btn-row" style="margin-top:0">
       <button class="btn btn-secondary" onclick="downloadTemplate('csv')">CSV template</button>
       <button class="btn btn-secondary" onclick="downloadTemplate('xlsx')">Excel template</button>
@@ -384,48 +450,70 @@ select option{background:var(--navy-mid)}
   <div class="page-title"><h1>About <em>Ledja</em></h1><p>Kenya payroll — built for compliance</p></div>
   <div class="card">
     <div class="card-header"><div class="card-dot"></div><div class="card-title">What is Ledja?</div></div>
-    <p style="font-size:0.875rem;color:var(--white-dim);line-height:1.7;margin-bottom:1rem">Ledja is a Kenya-specific payroll calculator and filing tool. It handles PAYE, SHIF, NSSF, and Affordable Housing Levy calculations in line with current KRA and statutory rates, and generates filing-ready exports for iTax, NSSF eCitizen, and the SHA portal.</p>
+    <p style="font-size:0.875rem;color:var(--white-dim);line-height:1.7;margin-bottom:1rem">Ledja is a multi-country payroll calculator and filing tool. It handles PAYE, social contributions, and statutory levy calculations in line with current rates per country, and generates filing-ready exports for the relevant tax and social security portals.</p>
     <p style="font-size:0.875rem;color:var(--white-dim);line-height:1.7">All calculations run in your browser — no data is sent to any server. Your payroll data stays on your device.</p>
   </div>
   <div class="card">
-    <div class="card-header"><div class="card-dot"></div><div class="card-title">Current rates — April 2026</div></div>
-    <table class="data-table">
-      <thead><tr><th>Levy</th><th>Rate</th><th>Notes</th></tr></thead>
+    <div class="card-header"><div class="card-dot"></div><div class="card-title">Pricing</div></div>
+    <table class="data-table" style="margin-bottom:0.5rem">
+      <thead><tr><th>Employees</th><th style="text-align:right">Rate</th><th style="text-align:right">Example</th></tr></thead>
       <tbody>
-        <tr><td>PAYE</td><td class="mono">10–35%</td><td class="muted">Finance Act 2023 bands · personal relief KES 2,400/mo</td></tr>
-        <tr><td>SHIF</td><td class="mono">2.75%</td><td class="muted">No cap · employee only · pre-PAYE deduction · from Oct 2024</td></tr>
-        <tr><td>NSSF Tier I</td><td class="mono">6% ee + 6% er</td><td class="muted">On first KES 9,000 gross · Feb 2026 limit</td></tr>
-        <tr><td>NSSF Tier II</td><td class="mono">6% ee + 6% er</td><td class="muted">On KES 9,001–108,000 · or to private pension fund</td></tr>
-        <tr><td>Housing Levy</td><td class="mono">1.5% ee + 1.5% er</td><td class="muted">Affordable Housing Levy · pre-PAYE deduction</td></tr>
+        <tr><td>1 – 5</td><td class="mono" style="text-align:right;color:var(--amber)">Free</td><td class="muted" style="text-align:right">No payment needed</td></tr>
+        <tr><td>6 – 100</td><td class="mono" style="text-align:right">KES 15 / employee</td><td class="muted" style="text-align:right">20 employees = KES 300</td></tr>
+        <tr><td>101+</td><td class="mono" style="text-align:right">KES 10 / employee</td><td class="muted" style="text-align:right">First 100 @ KES 15, rest @ KES 10</td></tr>
       </tbody>
     </table>
+    <p style="font-size:0.75rem;color:var(--white-dim);line-height:1.6;margin-top:0.75rem">Payment is per payroll run via M-Pesa Paybill. Your access code unlocks exports for that month only — codes expire at month end. There is no subscription.</p>
   </div>
-  <div class="card">
-    <div class="card-header"><div class="card-dot"></div><div class="card-title">Remittance deadlines</div></div>
-    <table class="data-table">
-      <thead><tr><th>Obligation</th><th>Due</th><th>Portal</th></tr></thead>
-      <tbody>
-        <tr><td>PAYE</td><td class="mono amber">9th</td><td class="muted">KRA iTax</td></tr>
-        <tr><td>SHIF</td><td class="mono amber">9th</td><td class="muted">SHA portal / Paybill 984444</td></tr>
-        <tr><td>AHL</td><td class="mono amber">9th</td><td class="muted">KRA iTax</td></tr>
-        <tr><td>NSSF</td><td class="mono amber">15th</td><td class="muted">NSSF eCitizen</td></tr>
-        <tr><td>HELB</td><td class="mono amber">9th</td><td class="muted">HELB portal</td></tr>
-      </tbody>
-    </table>
+  <div class="country-tabs" id="about-country-tabs">
+    <button class="country-tab-btn active" data-code="ke" onclick="setAboutCountry('ke',this)">🇰🇪 Kenya</button>
+    <button class="country-tab-btn" data-code="ug" onclick="setAboutCountry('ug',this)">🇺🇬 Uganda</button>
+    <button class="country-tab-btn" data-code="tz" onclick="setAboutCountry('tz',this)">🇹🇿 Tanzania</button>
+    <button class="country-tab-btn" data-code="rw" onclick="setAboutCountry('rw',this)">🇷🇼 Rwanda</button>
   </div>
-  <div class="notice">Rates are hardcoded as at April 2026. Always verify against current KRA, NSSF, and SHA publications before filing.</div>
+  <div class="card" id="about-rates-card">
+    <div class="card-header"><div class="card-dot"></div><div class="card-title" id="about-rates-title">Current rates — April 2026</div></div>
+    <div id="about-rates-body"></div>
+  </div>
+  <div class="card" id="about-deadlines-card">
+    <div class="card-header"><div class="card-dot"></div><div class="card-title" id="about-deadlines-title">Remittance deadlines</div></div>
+    <div id="about-deadlines-body"></div>
+  </div>
+  <div class="notice" id="about-notice">Select a country to view rates and deadlines.</div>
 </div>
 
 <!-- SUPPORT -->
 <div id="tab-support" class="section">
-  <div class="page-title"><h1>Get <em>support</em></h1><p>Questions, issues, feedback</p></div>
-  <div class="card">
-    <div class="card-header"><div class="card-dot"></div><div class="card-title">Common questions</div></div>
-    <div style="display:flex;flex-direction:column;gap:1rem">
-      <div><p style="font-size:0.85rem;font-weight:500;margin-bottom:4px">Why is SHIF lower than the old NHIF?</p><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">SHIF replaced NHIF at 2.75% of gross (no cap). For employees earning below KES 61,800 the old NHIF cap of KES 1,700 meant they paid more. SHIF is lower for those earners.</p></div>
-      <div style="border-top:1px solid var(--border-mid);padding-top:1rem"><p style="font-size:0.85rem;font-weight:500;margin-bottom:4px">What is contracted-out NSSF?</p><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">An arrangement where Tier I is remitted to NSSF and Tier II goes to an approved private occupational pension fund (e.g. ICEA Lion, Britam). Requires formal NSSF exemption approval.</p></div>
-      <div style="border-top:1px solid var(--border-mid);padding-top:1rem"><p style="font-size:0.85rem;font-weight:500;margin-bottom:4px">Does Ledja store my data?</p><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">No. All calculations and payroll data exist only in your browser session. Closing the tab clears everything. No data leaves your device.</p></div>
-      <div style="border-top:1px solid var(--border-mid);padding-top:1rem"><p style="font-size:0.85rem;font-weight:500;margin-bottom:4px">How do I use the bulk import?</p><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">Download the CSV or Excel template from the Bulk Import tab. Fill in your employee data — Emp_No, Surname, and Basic are required. For NSSF_Type use: <span style="font-family:var(--font-mono);color:var(--amber)">full</span>, <span style="font-family:var(--font-mono);color:var(--amber)">contracted</span>, or <span style="font-family:var(--font-mono);color:var(--amber)">old</span>.</p></div>
+  <div class="page-title"><h1>Get <em>support</em></h1><p>FAQs by country &middot; contact</p></div>
+  <div class="country-tabs">
+    <button class="country-tab-btn active" onclick="setSupportCountry('ke',this)">🇰🇪 Kenya</button>
+    <button class="country-tab-btn" onclick="setSupportCountry('ug',this)">🇺🇬 Uganda</button>
+    <button class="country-tab-btn" onclick="setSupportCountry('tz',this)">🇹🇿 Tanzania</button>
+    <button class="country-tab-btn" onclick="setSupportCountry('rw',this)">🇷🇼 Rwanda</button>
+  </div>
+  <div id="support-faqs"></div>
+  <div class="card" style="margin-top:1rem">
+    <div class="card-header"><div class="card-dot"></div><div class="card-title">General</div></div>
+    <div class="accordion">
+      <div class="accordion-hdr" onclick="toggleAccordion(this)">
+        <span class="accordion-title">Does Ledja store my data?</span>
+        <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body"><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">No. All calculations and payroll data exist only in your browser session. Closing the tab clears everything. No data leaves your device.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-hdr" onclick="toggleAccordion(this)">
+        <span class="accordion-title">How do I use bulk import?</span>
+        <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body"><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">Download the CSV or Excel template from the Bulk Import tab. Required: <span style="font-family:var(--font-mono);color:var(--amber)">Surname</span> and <span style="font-family:var(--font-mono);color:var(--amber)">Basic</span>. For NSSF_Type use: <span style="font-family:var(--font-mono);color:var(--amber)">full</span>, <span style="font-family:var(--font-mono);color:var(--amber)">contracted</span>, or <span style="font-family:var(--font-mono);color:var(--amber)">old</span>. Bulk import is currently Kenya only.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-hdr" onclick="toggleAccordion(this)">
+        <span class="accordion-title">How often are rates updated?</span>
+        <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body"><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">Rates are updated with each Finance Act or statutory amendment. Always verify against the relevant tax authority's publications before filing. Ledja displays the effective date in the notice bar.</p></div>
     </div>
   </div>
   <div class="card">
@@ -442,28 +530,48 @@ select option{background:var(--navy-mid)}
 <div id="tab-export" class="section">
   <div class="page-title"><h1>Filing <em>exports</em></h1><p>KRA &middot; NSSF &middot; SHIF &mdash; portal-ready formats</p></div>
   <div class="notice">Ensure all employees are loaded before exporting. KRA PAYE CSV matches the iTax bulk upload column spec exactly.</div>
-  <div class="export-grid">
-    <button class="export-card" onclick="exportKRApaye()">
+
+  <!-- Unlock status bar -->
+  <div id="paywall-status" class="card" style="margin-bottom:1rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-dim);margin-bottom:4px">Export access</div>
+        <div id="paywall-status-text" style="font-size:0.875rem;color:var(--white)">Add employees to calculate payment</div>
+      </div>
+      <div id="paywall-action-area">
+        <button class="btn btn-primary" onclick="openPaywall()" id="paywall-unlock-btn" style="display:none">Unlock exports →</button>
+        <div class="unlock-badge" id="paywall-unlocked-badge" style="display:none">✓ Exports unlocked &middot; <span id="paywall-unlock-detail"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="export-grid" id="export-grid">
+    <button class="export-card" onclick="gatedExport(exportKRApaye)">
       <div class="export-card-icon">&#127963;</div>
       <div class="export-card-title">KRA PAYE — iTax CSV</div>
       <div class="export-card-sub">Exact column format &middot; due 9th</div>
     </button>
-    <button class="export-card" onclick="exportNSSF()">
+    <button class="export-card" onclick="gatedExport(exportNSSF)">
       <div class="export-card-icon">&#128203;</div>
       <div class="export-card-title">NSSF Schedule — Excel</div>
-      <div class="export-card-sub">Tier I only (contracted-out) &middot; eCitizen &middot; due 15th</div>
+      <div class="export-card-sub">Tier I &middot; eCitizen &middot; due 15th</div>
     </button>
-    <button class="export-card" onclick="exportSHIF()">
+    <button class="export-card" onclick="gatedExport(exportSHIF)">
       <div class="export-card-icon">&#127973;</div>
       <div class="export-card-title">SHIF Schedule — Excel</div>
       <div class="export-card-sub">2.75% &middot; SHA portal &middot; due 9th</div>
     </button>
-    <button class="export-card" onclick="exportPayrollSummary()">
+    <button class="export-card" onclick="gatedExport(exportPayrollSummary)">
       <div class="export-card-icon">&#128202;</div>
       <div class="export-card-title">Full summary — Excel</div>
       <div class="export-card-sub">All components &middot; employer copy</div>
     </button>
-    <button class="export-card" id="pension-export-card" style="display:none" onclick="exportPensionFund()">
+    <button class="export-card" onclick="gatedExport(exportBulkPayslips)">
+      <div class="export-card-icon">&#128196;</div>
+      <div class="export-card-title">Bulk payslips — PDF</div>
+      <div class="export-card-sub">All employees · print or save as PDF</div>
+    </button>
+    <button class="export-card" id="pension-export-card" style="display:none" onclick="gatedExport(exportPensionFund)">
       <div class="export-card-icon">&#127970;</div>
       <div class="export-card-title">Pension Fund — Excel</div>
       <div class="export-card-sub">Tier II contributions &middot; private fund</div>
@@ -471,20 +579,387 @@ select option{background:var(--navy-mid)}
   </div>
 </div>
 
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="rating-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Rate <em style="color:var(--amber);font-style:normal">Ledja</em></div>
+      <div class="modal-subtitle">Your feedback helps us improve — and others decide</div>
+    </div>
+    <div class="modal-body">
+      <div id="rating-form-wrap">
+        <div class="rating-stars-input" id="star-input">
+          <span data-v="1" onclick="setRatingStar(1)">★</span>
+          <span data-v="2" onclick="setRatingStar(2)">★</span>
+          <span data-v="3" onclick="setRatingStar(3)">★</span>
+          <span data-v="4" onclick="setRatingStar(4)">★</span>
+          <span data-v="5" onclick="setRatingStar(5)">★</span>
+        </div>
+        <div class="field">
+          <label>Your name <span class="muted" style="font-weight:400">(optional)</span></label>
+          <input id="rating-name" placeholder="e.g. Wanjiku from Nairobi" maxlength="40"/>
+        </div>
+        <div class="field" style="margin-top:0.75rem">
+          <label>Comment <span class="muted" style="font-weight:400">(optional)</span></label>
+          <textarea id="rating-comment" placeholder="What do you think of Ledja?" rows="3" style="resize:vertical;background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--radius);color:var(--white);font-family:var(--font-body);font-size:0.875rem;padding:10px 12px;width:100%;box-sizing:border-box;outline:none" maxlength="200"></textarea>
+        </div>
+        <div id="rating-list-wrap">
+          <div style="font-size:0.7rem;color:var(--white-dim);text-transform:uppercase;letter-spacing:0.08em;margin-top:1.25rem;margin-bottom:6px">Recent reviews</div>
+          <div class="rating-list" id="rating-list"><div style="font-size:0.8rem;color:var(--white-dim);text-align:center;padding:1rem">Loading reviews…</div></div>
+        </div>
+      </div>
+      <div id="rating-submitted-wrap" class="rating-submitted" style="display:none">
+        <div class="rating-submitted-score" id="rating-submitted-stars">★★★★★</div>
+        <div style="font-size:1rem;font-weight:600;color:var(--white);margin-bottom:6px">Thank you!</div>
+        <div class="rating-submitted-msg">Your rating has been submitted.<br>It helps other payroll teams discover Ledja.</div>
+      </div>
+    </div>
+    <div class="modal-footer" id="rating-footer">
+      <button class="btn btn-secondary" onclick="closeRatingModal()">Close</button>
+      <button class="btn btn-primary" id="rating-submit-btn" onclick="submitRating()" disabled>Submit rating</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYWALL MODAL -->
+<div class="modal-overlay" id="paywall-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Unlock <em style="color:var(--amber);font-style:normal">exports</em></div>
+      <div class="modal-subtitle" id="modal-emp-summary">Loading...</div>
+    </div>
+    <div class="modal-body">
+
+      <!-- Free tier -->
+      <div id="modal-free" style="display:none">
+        <div class="unlock-badge" style="margin-bottom:1rem">&#10003; Free tier — no payment needed</div>
+        <p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">You have ≤ 5 employees. Ledja exports are free for small teams.</p>
+      </div>
+
+      <!-- Paid tier -->
+      <div id="modal-paid">
+        <div class="paywall-amount">
+          <div>
+            <div class="paywall-amount-label">Amount to pay</div>
+            <div class="paywall-amount-value" id="modal-amount">KES 0</div>
+            <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--white-dim);margin-top:3px" id="modal-pricing-note"></div>
+          </div>
+          <div style="text-align:right">
+            <div class="paywall-amount-label">Paybill</div>
+            <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:500;color:var(--white)" id="modal-paybill">600998</div>
+            <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--white-dim);margin-top:2px">Ledja Payroll</div>
+          </div>
+        </div>
+
+        <div class="paywall-steps">
+          <div style="display:flex;align-items:flex-start;gap:0;margin-bottom:6px">
+            <span class="paywall-step-num">1</span>
+            <span>Open M-Pesa → <strong>Lipa Na M-Pesa → Pay Bill</strong></span>
+          </div>
+          <div style="display:flex;align-items:flex-start;margin-bottom:6px">
+            <span class="paywall-step-num">2</span>
+            <span>Business no: <strong id="step-paybill">600998</strong> &middot; Account: <strong>your phone number</strong></span>
+          </div>
+          <div style="display:flex;align-items:flex-start;margin-bottom:6px">
+            <span class="paywall-step-num">3</span>
+            <span>Amount: <strong id="step-amount">KES 0</strong> &middot; Enter PIN and send</span>
+          </div>
+          <div style="display:flex;align-items:flex-start">
+            <span class="paywall-step-num">4</span>
+            <span>You'll receive an SMS with your access code within seconds</span>
+          </div>
+        </div>
+
+        <div class="paywall-divider">enter code below</div>
+
+        <div class="form-grid cols-1" style="margin-bottom:0">
+          <div class="field">
+            <label>Your M-Pesa phone number</label>
+            <input id="pw-phone" placeholder="e.g. 0712 345 678" type="tel"/>
+          </div>
+          <div class="field" style="margin-top:0.75rem">
+            <label>Access code (from SMS)</label>
+            <input id="pw-code" placeholder="e.g. K7MXP3QA" style="text-transform:uppercase;letter-spacing:0.15em;font-family:var(--font-mono);font-size:1rem"/>
+          </div>
+        </div>
+        <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:rgba(252,211,77,0.07);border:1px solid rgba(252,211,77,0.2);border-radius:var(--radius);font-family:var(--font-mono);font-size:0.65rem;color:var(--white-dim);line-height:1.7">
+          🧪 <span style="color:var(--amber)">Sandbox testing</span><br>
+          Phone: <span style="color:var(--white)">0700000000</span> &nbsp;&middot;&nbsp; Code: <span style="color:var(--white)">TEST2026</span>
+        </div>
+        <div class="paywall-error" id="pw-error"></div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="pw-submit-btn" onclick="submitPaywall()">Validate &amp; unlock →</button>
+      <button class="btn btn-secondary" onclick="closePaywall()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </main>
+
 </div>
 
 <script>
 const employees=[];
 let currentCalc=null,pendingImport=[];
 let identityOn=false;
+
+let companyName = '';
+let companyPin  = '';
+
+function updateCompany(){
+  const cn=document.getElementById('c-company');const cp=document.getElementById('c-company-pin');
+  if(cn)companyName=cn.value.trim();
+  if(cp)companyPin=cp.value.trim();
+}
+
+function getCompany(){ return companyName || 'Company'; }
+
+function safeFilename(str){
+  return str.replace(/[^a-zA-Z0-9]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+
+function exportFilename(type, month){
+  const co = safeFilename(getCompany());
+  const mo = safeFilename(month || (employees[0]?.month || 'payroll'));
+  return `${co}_${type}_${mo}`;
+}
+
 // Dismiss splash after animation
 setTimeout(()=>{
   const s=document.getElementById('splash');
   if(s){s.classList.add('hidden');setTimeout(()=>s.remove(),650);}
 },2000);
 
-// ── COUNTRY CONFIGS ──────────────────────────────────────────────────────────
+// ── COUNTRY UI DATA ──────────────────────────────────────────────────────────
+const COUNTRY_UI = {
+  ke:{
+    taxpin:'KRA PIN', taxpin_ph:'A012345678Z',
+    pensionno:'NSSF member no.', healthno:'SHIF member no.',
+    healthno_ph:'SHIF/SHA number',
+    helb:true, nssf_scheme:true,
+    metric_shif:'SHIF', metric_nssf:'NSSF', metric_ahl:'AHL',
+    paye_lbl_shif:'Less: SHIF (pre-PAYE)',
+    paye_lbl_ahl:'Less: AHL employee (pre-PAYE)',
+    paye_lbl_nssf:'Less: NSSF employee (pre-PAYE)',
+    nssf_options:`<option value="full">Full statutory &mdash; Tier I &amp; II to NSSF</option><option value="contracted">Contracted-out &mdash; Tier I to NSSF, Tier II to pension</option><option value="old">Old scheme &mdash; flat KES 200</option>`,
+    currency:'KES',
+    rates_html:`<table class="data-table"><thead><tr><th>Levy</th><th>Rate</th><th>Notes</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono">10–35%</td><td class="muted">Finance Act 2023 bands · personal relief KES 2,400/mo</td></tr>
+      <tr><td>SHIF</td><td class="mono">2.75%</td><td class="muted">No cap · employee only · pre-PAYE deduction</td></tr>
+      <tr><td>NSSF Tier I</td><td class="mono">6% ee + 6% er</td><td class="muted">On first KES 9,000 · Feb 2026 limit</td></tr>
+      <tr><td>NSSF Tier II</td><td class="mono">6% ee + 6% er</td><td class="muted">KES 9,001–108,000 · or to private pension fund</td></tr>
+      <tr><td>AHL</td><td class="mono">1.5% ee + 1.5% er</td><td class="muted">Affordable Housing Levy · pre-PAYE deduction</td></tr>
+      <tr><td>NITA</td><td class="mono">KES 50 flat</td><td class="muted">Employer only · flat KES 50 per employee per month · due 15th</td></tr>
+    </tbody></table>`,
+    deadlines_html:`<table class="data-table"><thead><tr><th>Obligation</th><th>Due</th><th>Portal</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono" style="color:var(--amber)">9th</td><td class="muted">KRA iTax</td></tr>
+      <tr><td>SHIF</td><td class="mono" style="color:var(--amber)">9th</td><td class="muted">SHA portal / Paybill 984444</td></tr>
+      <tr><td>AHL</td><td class="mono" style="color:var(--amber)">9th</td><td class="muted">KRA iTax</td></tr>
+      <tr><td>NSSF</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">NSSF eCitizen</td></tr>
+      <tr><td>NITA</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">NITA portal (nita.go.ke)</td></tr>
+      <tr><td>HELB</td><td class="mono" style="color:var(--amber)">9th</td><td class="muted">HELB portal</td></tr>
+    </tbody></table>`,
+    notice:'Rates as at April 2026 · KRA · SHA · NSSF. Always verify before filing.',
+    faqs:[
+      {q:'Why is SHIF lower than old NHIF?',a:'SHIF replaced NHIF at 2.75% of gross with no cap. Employees earning below KES 61,800 were previously capped at KES 1,700 with NHIF — SHIF is lower for those earners but higher for top earners.'},
+      {q:'What is contracted-out NSSF?',a:'An arrangement where Tier I (on first KES 9,000) goes to NSSF and Tier II goes to an approved private occupational pension fund (e.g. ICEA Lion, Britam). Requires formal NSSF exemption approval in writing.'},
+      {q:'When must PAYE be remitted?',a:'PAYE must be paid to KRA by the 9th of the following month via iTax. Late payment attracts a 5% penalty plus 1% interest per month on the outstanding amount.'},
+      {q:'Is AHL tax-deductible?',a:'Yes. Both employee and employer AHL contributions are deductible from taxable income under the Tax Laws Amendment Act 2024, effective 27 December 2024.'}
+    ]
+  },
+  ug:{
+    taxpin:'TIN (URA)', taxpin_ph:'1000000000',
+    pensionno:'NSSF member no.', healthno:'NHIS number',
+    healthno_ph:'NHIS number',
+    helb:false, nssf_scheme:false,
+    metric_shif:null, metric_nssf:'NSSF', metric_ahl:null,
+    paye_lbl_shif:null,
+    paye_lbl_ahl:null,
+    paye_lbl_nssf:'Less: NSSF employee (not pre-PAYE)',
+    currency:'UGX',
+    rates_html:`<table class="data-table"><thead><tr><th>Levy</th><th>Rate</th><th>Notes</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono">0–40%</td><td class="muted">0% ≤ 235k · 10% 235–335k · 20% 335–410k · 30% 410k–10m · 40% >10m + 10% surtax</td></tr>
+      <tr><td>NSSF</td><td class="mono">5% ee + 10% er</td><td class="muted">No cap · not pre-PAYE · remit to NSSF Uganda</td></tr>
+      <tr><td>NHIS</td><td class="mono">4% ee</td><td class="muted">National Health Insurance Scheme · mandatory from 2024</td></tr>
+      <tr><td>Training levy</td><td class="mono">None</td><td class="muted">Uganda has no employer training levy equivalent to NITA or SDL</td></tr>
+    </tbody></table>`,
+    deadlines_html:`<table class="data-table"><thead><tr><th>Obligation</th><th>Due</th><th>Portal</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">URA e-Tax portal</td></tr>
+      <tr><td>NSSF</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">NSSF Uganda portal</td></tr>
+      <tr><td>NHIS</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">NHIS portal</td></tr>
+    </tbody></table>`,
+    notice:'Rates: URA 2025/26 · NSSF Uganda · NHIS. Surtax 10% applies above UGX 10m/month.',
+    faqs:[
+      {q:'What is the Uganda PAYE tax-free threshold?',a:'The current threshold is UGX 235,000 per month. A proposal to raise it to UGX 335,000 was tabled for 2026/27 but is not yet law — confirm with URA before applying.'},
+      {q:'How is NSSF calculated in Uganda?',a:'Employee contributes 5% and employer contributes 10% of gross monthly salary. There is no earnings cap. NSSF is not a pre-PAYE deduction in Uganda — PAYE is calculated on full gross.'},
+      {q:'What is the Uganda surtax?',a:'Employees earning above UGX 10,000,000 per month pay an additional 10% surtax on the amount above that threshold, on top of the 30% band rate — making the effective top rate 40%.'},
+      {q:'When is PAYE due in Uganda?',a:'PAYE must be remitted to URA by the 15th of the following month via the URA e-Tax portal. Penalties apply for late payment.'}
+    ]
+  },
+  tz:{
+    taxpin:'TIN (TRA)', taxpin_ph:'100-000-000',
+    pensionno:'NSSF member no.', healthno:'NHIF number',
+    healthno_ph:'NHIF number',
+    helb:false, nssf_scheme:false,
+    metric_shif:null, metric_nssf:'NSSF', metric_ahl:null,
+    paye_lbl_shif:null,
+    paye_lbl_ahl:null,
+    paye_lbl_nssf:'Less: NSSF employee (pre-PAYE)',
+    currency:'TZS',
+    rates_html:`<table class="data-table"><thead><tr><th>Levy</th><th>Rate</th><th>Notes</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono">0–30%</td><td class="muted">0% ≤ 270k · 8% 270–520k · 20% 520–760k · 25% 760k–1m · 30% >1m</td></tr>
+      <tr><td>NSSF</td><td class="mono">10% ee + 10% er</td><td class="muted">No cap · pre-PAYE deduction · remit to NSSF Tanzania</td></tr>
+      <tr><td>SDL</td><td class="mono">3.5% er only</td><td class="muted">Skills Development Levy — Tanzania's training levy equivalent · employers with 10+ employees · due 7th</td></tr>
+      <tr><td>WCF</td><td class="mono">0.5% er only</td><td class="muted">Workers Compensation Fund · employer only · due 7th</td></tr>
+    </tbody></table>`,
+    deadlines_html:`<table class="data-table"><thead><tr><th>Obligation</th><th>Due</th><th>Portal</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono" style="color:var(--amber)">7th</td><td class="muted">TRA portal</td></tr>
+      <tr><td>NSSF</td><td class="mono" style="color:var(--amber)">10th</td><td class="muted">NSSF Tanzania portal</td></tr>
+      <tr><td>SDL / WCF</td><td class="mono" style="color:var(--amber)">7th</td><td class="muted">TRA portal</td></tr>
+    </tbody></table>`,
+    notice:'Rates: TRA Finance Act 2025/26 · NSSF Tanzania. SDL applies to employers with 10+ employees.',
+    faqs:[
+      {q:'How does NSSF work in Tanzania?',a:'Both employee and employer contribute 10% of gross salary each. NSSF is a pre-PAYE deduction — it reduces taxable income before the PAYE bands are applied. There is no earnings cap.'},
+      {q:'What is the SDL and who pays it?',a:'The Skills Development Levy is 3.5% of gross payroll, paid entirely by the employer. It applies to employers with 10 or more employees and is remitted to TRA along with PAYE by the 7th of the following month.'},
+      {q:'What is the WCF?',a:'The Workers Compensation Fund is 0.5% of gross payroll, employer-only. It provides compensation cover for work-related injuries and is remitted to TRA.'},
+      {q:'When is Tanzania PAYE due?',a:'PAYE must be remitted to TRA by the 7th of the following month. This is earlier than Kenya — important to note if you operate across both countries.'}
+    ]
+  },
+  rw:{
+    taxpin:'TIN (RRA)', taxpin_ph:'100000000',
+    pensionno:'RSSB member no.', healthno:'CBHI/Mutuelle no.',
+    healthno_ph:'CBHI number',
+    helb:false, nssf_scheme:false,
+    metric_shif:'RSSB Pension', metric_nssf:null, metric_ahl:'Maternity',
+    paye_lbl_shif:null,
+    paye_lbl_ahl:'Less: Maternity fund employee (pre-PAYE)',
+    paye_lbl_nssf:'Less: RSSB pension employee (pre-PAYE)',
+    currency:'RWF',
+    rates_html:`<table class="data-table"><thead><tr><th>Levy</th><th>Rate</th><th>Notes</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono">0–30%</td><td class="muted">0% ≤ 60k · 10% 60–100k · 20% 100–200k · 30% >200k/month</td></tr>
+      <tr><td>RSSB Pension</td><td class="mono">6% ee + 6% er</td><td class="muted">Doubled Jan 2025 · pre-PAYE deduction · remit to RSSB</td></tr>
+      <tr><td>Maternity</td><td class="mono">0.3% ee + 0.3% er</td><td class="muted">Maternity leave fund · remit to RSSB</td></tr>
+      <tr><td>Occ. Hazard</td><td class="mono">2% er only</td><td class="muted">Occupational hazard insurance · employer only</td></tr>
+    </tbody></table>`,
+    deadlines_html:`<table class="data-table"><thead><tr><th>Obligation</th><th>Due</th><th>Portal</th></tr></thead><tbody>
+      <tr><td>PAYE</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">RRA portal (tax.gov.rw)</td></tr>
+      <tr><td>RSSB</td><td class="mono" style="color:var(--amber)">15th</td><td class="muted">RSSB portal</td></tr>
+    </tbody></table>`,
+    notice:'Rates: RRA 2026 · RSSB pension doubled Jan 2025. No housing levy or HELB equivalent in Rwanda.',
+    faqs:[
+      {q:'Did Rwanda RSSB pension rates change?',a:'Yes. RSSB pension contribution doubled effective January 2025 — from 3% to 6% for both employee and employer. Total combined contribution is now 12% of gross salary.'},
+      {q:'Is RSSB pension a pre-PAYE deduction?',a:'Yes. The employee RSSB pension contribution reduces taxable income before PAYE bands are applied, similar to Kenya\'s treatment of NSSF.'},
+      {q:'What is the maternity fund?',a:'Both employee and employer contribute 0.3% of gross salary each to the maternity leave fund managed by RSSB. This is separate from the pension contribution.'},
+      {q:'When is Rwanda PAYE due?',a:'PAYE must be remitted to RRA by the 15th of the following month via the RRA portal at tax.gov.rw. RSSB contributions are also due by the 15th.'}
+    ]
+  }
+};
+
+function updateCalcUI(code){
+  if(!code)return;
+  const ui=COUNTRY_UI[code];
+  const cur=COUNTRIES[code].currency;
+  // Identity labels
+  document.getElementById('lbl-taxpin').textContent=ui.taxpin;
+  document.getElementById('c-krapin').placeholder=ui.taxpin_ph;
+  document.getElementById('lbl-pensionno').textContent=ui.pensionno;
+  document.getElementById('lbl-healthno').textContent=ui.healthno;
+  document.getElementById('c-shifno').placeholder=ui.healthno_ph;
+  // HELB field
+  document.getElementById('helb-field').style.display=ui.helb?'':'none';
+  // NSSF scheme selector
+  document.getElementById('nssf-scheme-row').style.display='grid';
+  if(!ui.nssf_scheme){
+    document.getElementById('c-nssf-type').closest('.field').style.display='none';
+  }else{
+    document.getElementById('c-nssf-type').closest('.field').style.display='';
+    document.getElementById('c-nssf-type').innerHTML=ui.nssf_options||'';
+  }
+  // Metric card labels + visibility per country
+  const mShifCard=document.getElementById('metric-shif-card');
+  const mNssfCard=document.getElementById('metric-nssf-card');
+  const mAhlCard=document.getElementById('metric-ahl-card');
+  if(mShifCard){mShifCard.style.display=ui.metric_shif?'':'none';if(ui.metric_shif)mShifCard.querySelector('.metric-label').textContent=ui.metric_shif;}
+  if(mNssfCard){mNssfCard.style.display=ui.metric_nssf?'':'none';if(ui.metric_nssf)mNssfCard.querySelector('.metric-label').textContent=ui.metric_nssf;}
+  if(mAhlCard){mAhlCard.style.display=ui.metric_ahl?'':'none';if(ui.metric_ahl)mAhlCard.querySelector('.metric-label').textContent=ui.metric_ahl;}
+  // Bonus label (no overtime prefix since overtime has its own field)
+  document.getElementById('lbl-bonus').textContent=`Bonus / Commission (${cur})`;
+  document.getElementById('lbl-basic').textContent=`Basic pay (${cur})`;
+  document.getElementById('lbl-allowances').textContent=`Taxable allowances (${cur})`;
+  document.getElementById('lbl-overtime').textContent=`Overtime (${cur})`;
+  if(ui.helb)document.getElementById('lbl-helb').textContent=`HELB deduction (${cur})`;
+  document.getElementById('lbl-advance').textContent=`Salary advance recovery (${cur})`;
+  document.getElementById('lbl-loan').textContent=`Staff loan repayment (${cur})`;
+  // PAYE computation card — dynamic row labels & visibility
+  const shifRow=document.getElementById('pt-row-shif');
+  const ahlRow=document.getElementById('pt-row-ahl');
+  const nssfRow=document.getElementById('pt-row-nssf');
+  if(shifRow){shifRow.style.display=ui.paye_lbl_shif?'':'none';if(ui.paye_lbl_shif)document.getElementById('pt-lbl-shif').textContent=ui.paye_lbl_shif;}
+  if(ahlRow){ahlRow.style.display=ui.paye_lbl_ahl?'':'none';if(ui.paye_lbl_ahl)document.getElementById('pt-lbl-ahl').textContent=ui.paye_lbl_ahl;}
+  if(nssfRow){nssfRow.style.display=ui.paye_lbl_nssf?'':'none';if(ui.paye_lbl_nssf)document.getElementById('pt-lbl-nssf').textContent=ui.paye_lbl_nssf;}
+  // Page subtitle
+  const sub=document.querySelector('#tab-calculator .page-title p');
+  if(sub)sub.textContent=`PAYE · ${COUNTRIES[code].socialAuthority} · ${cur} · ${COUNTRIES[code].taxAuthority} rates`;
+  // Notice
+  const notice=document.getElementById('calc-notice');
+  if(notice)notice.textContent=COUNTRIES[code].notice;
+  // Clear results
+  document.getElementById('results').style.display='none';
+  document.getElementById('c-basic').value='';
+}
+
+function updateAbout(code){
+  if(!code)return;
+  const ui=COUNTRY_UI[code];
+  const c=COUNTRIES[code];
+  document.getElementById('about-rates-title').textContent=`${c.flag} ${c.name} — current rates`;
+  document.getElementById('about-rates-body').innerHTML=ui.rates_html;
+  document.getElementById('about-deadlines-title').textContent=`${c.flag} ${c.name} — remittance deadlines`;
+  document.getElementById('about-deadlines-body').innerHTML=ui.deadlines_html;
+  document.getElementById('about-notice').textContent=ui.notice;
+  // Update page title
+  const sub=document.querySelector('#tab-about .page-title p');
+  if(sub)sub.textContent=`${c.flag} ${c.name} · ${c.taxAuthority} · ${c.currency}`;
+  // Sync about tab buttons
+  document.querySelectorAll('#about-country-tabs .country-tab-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.code===code);
+  });
+}
+
+function setAboutCountry(code,btn){
+  updateAbout(code);
+}
+
+let supportCountry='ke';
+function setSupportCountry(code,btn){
+  supportCountry=code;
+  document.querySelectorAll('.country-tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderSupportFAQs(code);
+}
+function renderSupportFAQs(code){
+  const ui=COUNTRY_UI[code];
+  const c=COUNTRIES[code];
+  document.getElementById('support-faqs').innerHTML=`
+    <div class="card">
+      <div class="card-header"><div class="card-dot"></div><div class="card-title">${c.flag} ${c.name} — frequently asked questions</div></div>
+      ${ui.faqs.map(f=>`
+      <div class="accordion">
+        <div class="accordion-hdr" onclick="toggleAccordion(this)">
+          <span class="accordion-title">${f.q}</span>
+          <svg class="accordion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body"><p style="font-size:0.825rem;color:var(--white-dim);line-height:1.6">${f.a}</p></div>
+      </div>`).join('')}
+    </div>`;
+}
+function toggleAccordion(hdr){
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
 const COUNTRIES = {
   ke: {
     name:'Kenya', currency:'KES', flag:'🇰🇪', live:true,
@@ -498,9 +973,10 @@ const COUNTRIES = {
       shif:0.0275, shif_cap:null,
       nssf_t1:9000, nssf_t2:108000, nssf_rate:0.06,
       ahl_ee:0.015, ahl_er:0.015,
-      nssf_pre_paye:true, shif_pre_paye:true, ahl_pre_paye:true
+      nssf_pre_paye:true, shif_pre_paye:true, ahl_pre_paye:true,
+      nita_flat:50
     },
-    notice:'PAYE Finance Act 2023 · SHIF 2.75% · NSSF Feb 2026 Tier I/II @ 6% · AHL 1.5% ee+er · SHIF/AHL/NSSF pre-PAYE deductions'
+    notice:'PAYE Finance Act 2023 · SHIF 2.75% · NSSF Feb 2026 Tier I/II @ 6% · AHL 1.5% ee+er · NITA flat KES 50/employee/month · SHIF/AHL/NSSF pre-PAYE deductions'
   },
   ug: {
     name:'Uganda', currency:'UGX', flag:'🇺🇬', live:true,
@@ -560,29 +1036,29 @@ function setCountry(code) {
   const c = COUNTRIES[code];
   // Sync dropdown
   document.getElementById('country-select').value = code;
-  // Update header label
-  // Update notice
-  const noticeEl = document.querySelector('.notice');
-  if (noticeEl) noticeEl.textContent = c.notice;
-  // Update currency labels
-  document.querySelectorAll('[data-currency]').forEach(el => el.textContent = c.currency);
+  // Update all UI labels, PAYE rows, metric cards, currency fields
+  updateCalcUI(code);
+  // Update About tab
+  updateAbout(code);
+  // Sync about tab country buttons if visible
+  document.querySelectorAll('#about-country-tabs .country-tab-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.code===code);
+  });
   // Recalculate if there's a value
   if (parseFloat(document.getElementById('c-basic').value)) calcPay();
-  // Update page title subtitle
-  const sub = document.querySelector('.page-title p');
-  if (sub) sub.textContent = 'PAYE · ' + c.socialAuthority + ' · ' + c.currency + ' · ' + c.taxAuthority + ' rates';
 }
 
 function computeForCountry(data, code) {
   const c = COUNTRIES[code];
   const r = c.rates;
   const basic = +data.basic||0, allowances = +data.allowances||0, bonus = +data.bonus||0;
+  const overtime = +data.overtime||0;
   const helb = +data.helb||0, advance = +data.advance||0, loan = +data.loan||0;
-  const gross = basic + allowances + bonus;
+  const gross = basic + allowances + overtime + bonus;
 
   let prePayeDeductions = 0, nssf_ee = 0, nssf_er = 0, shif = 0, ahl_ee = 0, ahl_er = 0;
   let pension_ee = 0, pension_er = 0, maternity_ee = 0, maternity_er = 0, occ_er = 0;
-  let sdl = 0, wcf = 0, deductionRows = [];
+  let sdl = 0, wcf = 0, nita_er = 0, deductionRows = [];
 
   if (code === 'ke') {
     const nssfType = data.nssfType || 'full';
@@ -592,12 +1068,14 @@ function computeForCountry(data, code) {
     const t2 = Math.min(Math.max(gross - r.nssf_t1, 0), r.nssf_t2 - r.nssf_t1) * r.nssf_rate;
     nssf_ee = t1 + t2; nssf_er = t1 + t2;
     if (nssfType === 'old') { nssf_ee = 200; nssf_er = 200; }
+    nita_er = r.nita_flat || 0;
     prePayeDeductions = shif + ahl_ee + nssf_ee;
     deductionRows = [
       {label:'PAYE',ee:0,note:'computed below'},
       {label:'SHIF (2.75%)',ee:shif},
       {label:'NSSF employee',ee:nssf_ee},
-      {label:'AHL (1.5%)',ee:ahl_ee}
+      {label:'AHL (1.5%)',ee:ahl_ee},
+      {label:'NITA (KES 50 flat)',ee:0,er:nita_er}
     ];
 
   } else if (code === 'ug') {
@@ -646,8 +1124,8 @@ function computeForCountry(data, code) {
   return {
     ...data, gross, paye, grossTax, payeRows, taxable, prePayeDeductions,
     shif, ahl_ee, ahl_er, nssf_ee, nssf_er,
-    pension_ee, pension_er, maternity_ee, maternity_er, occ_er, sdl, wcf,
-    helb, advance, loan, net, totalDeductions:totalEeDeductions,
+    pension_ee, pension_er, maternity_ee, maternity_er, occ_er, sdl, wcf, nita_er,
+    helb, advance, loan, overtime, net, totalDeductions:totalEeDeductions,
     statutoryDeductions: paye + nssf_ee + shif + ahl_ee + helb + pension_ee + maternity_ee,
     currency: COUNTRIES[code].currency, countryCode: code,
     nssf:{employee:nssf_ee,employer:nssf_er} // keep compat
@@ -689,13 +1167,13 @@ function calcNSSF(g,type){
 }
 
 function compute(d){
-  const basic=+d.basic||0,all=+d.allowances||0,bon=+d.bonus||0,helb=+d.helb||0,adv=+d.advance||0,loan=+d.loan||0;
-  const type=d.nssfType||'full',gross=basic+all+bon;
+  const basic=+d.basic||0,all=+d.allowances||0,ot=+d.overtime||0,bon=+d.bonus||0,helb=+d.helb||0,adv=+d.advance||0,loan=+d.loan||0;
+  const type=d.nssfType||'full',gross=basic+all+ot+bon;
   const shif=gross*SR,ahl_ee=gross*AR,ahl_er=gross*AR,nssf=calcNSSF(gross,type);
   const ti=Math.max(0,gross-shif-ahl_ee-nssf.employee);
   const{paye,rows,grossTax}=calcPAYE(ti);
   const stat=paye+shif+nssf.employee+ahl_ee+helb,tot=stat+adv+loan;
-  return{...d,basic,allowances:all,bonus:bon,helb,advance:adv,loan,gross,shif,ahl_ee,ahl_er,nssf,taxableIncome:ti,paye,grossTax,rows,statutoryDeductions:stat,totalDeductions:tot,net:gross-tot,nssfType:type};
+  return{...d,basic,allowances:all,overtime:ot,bonus:bon,helb,advance:adv,loan,gross,shif,ahl_ee,ahl_er,nssf,taxableIncome:ti,paye,grossTax,rows,statutoryDeductions:stat,totalDeductions:tot,net:gross-tot,nssfType:type};
 }
 
 
@@ -704,53 +1182,164 @@ function compute(d){
 function calcPay(){
   const basic=parseFloat(document.getElementById('c-basic').value)||0;
   if(!basic){document.getElementById('results').style.display='none';return;}
-  const data={surname:document.getElementById('c-surname').value.trim()||'Employee',othernames:document.getElementById('c-othernames').value.trim()||'',krapin:document.getElementById('c-krapin').value.trim()||'',idno:document.getElementById('c-idno').value.trim()||'',empid:document.getElementById('c-empid').value.trim()||'',nssfno:document.getElementById('c-nssfno').value.trim()||'',shifno:document.getElementById('c-shifno').value.trim()||'',phone:document.getElementById('c-phone').value.trim()||'',pensionno:document.getElementById('c-pensionno').value.trim()||'',month:document.getElementById('c-month').value.trim()||'',basic,allowances:parseFloat(document.getElementById('c-allowances').value)||0,bonus:parseFloat(document.getElementById('c-bonus').value)||0,helb:parseFloat(document.getElementById('c-helb').value)||0,advance:parseFloat(document.getElementById('c-advance').value)||0,loan:parseFloat(document.getElementById('c-loan').value)||0,nssfType:document.getElementById('c-nssf-type').value};
+  const data={surname:document.getElementById('c-surname').value.trim()||'Employee',othernames:document.getElementById('c-othernames').value.trim()||'',krapin:document.getElementById('c-krapin').value.trim()||'',idno:document.getElementById('c-idno').value.trim()||'',empid:document.getElementById('c-empid').value.trim()||'',nssfno:document.getElementById('c-nssfno').value.trim()||'',shifno:document.getElementById('c-shifno').value.trim()||'',phone:document.getElementById('c-phone').value.trim()||'',pensionno:document.getElementById('c-pensionno')?document.getElementById('c-pensionno').value.trim():'',month:document.getElementById('c-month').value.trim()||'',basic,allowances:parseFloat(document.getElementById('c-allowances').value)||0,overtime:parseFloat(document.getElementById('c-overtime').value)||0,bonus:parseFloat(document.getElementById('c-bonus').value)||0,helb:parseFloat(document.getElementById('c-helb').value)||0,advance:parseFloat(document.getElementById('c-advance').value)||0,loan:parseFloat(document.getElementById('c-loan').value)||0,nssfType:document.getElementById('c-nssf-type').value};
   const e=computeForCountry(data, activeCountry);currentCalc=e;
   document.getElementById('results').style.display='block';
   document.getElementById('calc-action-btns').style.display=identityOn?'flex':'none';
-  document.getElementById('pension-field').style.display=(activeCountry==='ke'&&data.nssfType==='contracted')?'grid':'none';
-  const c=COUNTRIES[activeCountry],cur=c.currency;
+  const c=COUNTRIES[activeCountry],cur=c.currency,ui=COUNTRY_UI[activeCountry];
+  const setMetric=(id,cardId,val)=>{
+    const card=document.getElementById(cardId);
+    const el=document.getElementById(id);
+    if(!card||!el)return;
+    if(!val){card.style.display='none';}
+    else{card.style.display='';el.textContent=fmt(val,cur);}
+  };
   document.getElementById('r-gross').textContent=fmt(e.gross,cur);
   document.getElementById('r-paye').textContent=fmt(e.paye,cur);
-  document.getElementById('r-shif').textContent=fmt(e.shif||e.pension_ee||0,cur);
-  document.getElementById('r-nssf').textContent=fmt(e.nssf_ee||0,cur);
-  document.getElementById('r-ahl').textContent=fmt(e.ahl_ee||e.maternity_ee||0,cur);
-  document.getElementById('r-loan').textContent=fmt(e.advance+e.loan,cur);
+  // SHIF card: Kenya=SHIF, Rwanda=RSSB pension, UG/TZ=hidden
+  setMetric('r-shif','metric-shif-card', activeCountry==='ke'?e.shif : activeCountry==='rw'?e.pension_ee : 0);
+  // NSSF card: KE/UG/TZ=NSSF ee, Rwanda=hidden
+  setMetric('r-nssf','metric-nssf-card', activeCountry==='rw'?0 : e.nssf_ee||0);
+  // AHL card: Kenya=AHL, Rwanda=Maternity, UG/TZ=hidden
+  setMetric('r-ahl','metric-ahl-card', activeCountry==='ke'?e.ahl_ee : activeCountry==='rw'?e.maternity_ee : 0);
+  // Loan/adv: show card only if any value
+  const loanTotal=(e.helb||0)+(e.advance||0)+(e.loan||0);
+  const loanCard=document.getElementById('metric-loan-card');
+  if(loanCard){if(!loanTotal)loanCard.style.display='none';else{loanCard.style.display='';document.getElementById('r-loan').textContent=fmt(loanTotal,cur);}}
   document.getElementById('r-net').textContent=fmt(e.net,cur);
   document.getElementById('pt-gross').textContent=fmt(e.gross,cur);
-  document.getElementById('pt-shif').innerHTML=e.shif?fmtN(e.shif,cur):(e.pension_ee?fmtN(e.pension_ee,cur):'&mdash;');
+  // pt-shif row: Kenya=SHIF, Rwanda row is hidden (null paye_lbl_shif), UG/TZ hidden
+  document.getElementById('pt-shif').innerHTML=e.shif?fmtN(e.shif,cur):'&mdash;';
+  // pt-ahl row: Kenya=AHL, Rwanda=Maternity (pre-PAYE)
   document.getElementById('pt-ahl').innerHTML=e.ahl_ee?fmtN(e.ahl_ee,cur):(e.maternity_ee?fmtN(e.maternity_ee,cur):'&mdash;');
-  document.getElementById('pt-nssf').innerHTML=e.nssf_ee?fmtN(e.nssf_ee,cur):'&mdash;';
+  // pt-nssf row: Kenya/UG/TZ=NSSF ee, Rwanda=RSSB pension ee
+  document.getElementById('pt-nssf').innerHTML=(e.nssf_ee?fmtN(e.nssf_ee,cur):(e.pension_ee?fmtN(e.pension_ee,cur):'&mdash;'));
   document.getElementById('pt-taxable').textContent=fmt(e.taxable,cur);
   const pr=c.rates.personal_relief||0;
   document.getElementById('paye-table').innerHTML=e.payeRows.map(r=>`<tr><td class="muted mono">${cur} ${Math.round(r.from).toLocaleString()} &ndash; ${Math.round(r.to).toLocaleString()}</td><td class="mono">${(r.rate*100).toFixed(1)}%</td><td class="mono">${fmt(r.tax,cur)}</td></tr>`).join('')+`<tr><td class="muted">Gross tax</td><td></td><td class="mono">${fmt(e.grossTax,cur)}</td></tr>${pr?`<tr><td class="muted">Personal relief</td><td></td><td class="mono">&ndash; ${cur} ${pr.toLocaleString()}</td></tr>`:''}<tr class="total-row"><td>PAYE payable</td><td></td><td class="mono">${fmt(e.paye,cur)}</td></tr>`;
-  document.getElementById('nssf-table').innerHTML='<thead><tr><th>Deduction</th><th>Employee</th><th>Employer</th></tr></thead><tbody>'+
-    (e.shif?`<tr><td class="muted">SHIF (2.75%)</td><td class="mono">${fmt(e.shif,cur)}</td><td class="mono">&mdash;</td></tr>`:'')+(e.nssf_ee?`<tr><td class="muted">${activeCountry==='tz'?'NSSF (10%)':'NSSF ee'}  </td><td class="mono">${fmt(e.nssf_ee,cur)}</td><td class="mono">${fmt(e.nssf_er,cur)}</td></tr>`:'')+(e.pension_ee?`<tr><td class="muted">RSSB Pension (6%)</td><td class="mono">${fmt(e.pension_ee,cur)}</td><td class="mono">${fmt(e.pension_er,cur)}</td></tr>`:'')+(e.maternity_ee?`<tr><td class="muted">Maternity (0.3%)</td><td class="mono">${fmt(e.maternity_ee,cur)}</td><td class="mono">${fmt(e.maternity_er,cur)}</td></tr>`:'')+(e.occ_er?`<tr><td class="muted">Occ. Hazard (2%)</td><td class="mono">&mdash;</td><td class="mono">${fmt(e.occ_er,cur)}</td></tr>`:'')+(e.ahl_ee?`<tr><td class="muted">AHL (1.5%)</td><td class="mono">${fmt(e.ahl_ee,cur)}</td><td class="mono">${fmt(e.ahl_er,cur)}</td></tr>`:'')+(e.sdl?`<tr><td class="muted">SDL (3.5%)</td><td class="mono">&mdash;</td><td class="mono">${fmt(e.sdl,cur)}</td></tr>`:'')+(e.wcf?`<tr><td class="muted">WCF (0.5%)</td><td class="mono">&mdash;</td><td class="mono">${fmt(e.wcf,cur)}</td></tr>`:'')+'</tbody>';
+  document.getElementById('nssf-table').innerHTML='<thead><tr><th>Deduction</th><th style="text-align:right">Employee</th><th style="text-align:right">Employer</th></tr></thead><tbody>'+
+    (e.shif?`<tr><td class="muted">SHIF (2.75%)</td><td class="mono" style="text-align:right">${fmt(e.shif,cur)}</td><td class="mono" style="text-align:right">&mdash;</td></tr>`:'')+
+    (e.nssf_ee?`<tr><td class="muted">${activeCountry==='tz'?'NSSF (10%)':'NSSF'}</td><td class="mono" style="text-align:right">${fmt(e.nssf_ee,cur)}</td><td class="mono" style="text-align:right">${fmt(e.nssf_er,cur)}</td></tr>`:'')+
+    (e.pension_ee?`<tr><td class="muted">RSSB Pension (6%)</td><td class="mono" style="text-align:right">${fmt(e.pension_ee,cur)}</td><td class="mono" style="text-align:right">${fmt(e.pension_er,cur)}</td></tr>`:'')+
+    (e.maternity_ee?`<tr><td class="muted">Maternity (0.3%)</td><td class="mono" style="text-align:right">${fmt(e.maternity_ee,cur)}</td><td class="mono" style="text-align:right">${fmt(e.maternity_er,cur)}</td></tr>`:'')+
+    (e.occ_er?`<tr><td class="muted">Occ. Hazard (2%)</td><td class="mono" style="text-align:right">&mdash;</td><td class="mono" style="text-align:right">${fmt(e.occ_er,cur)}</td></tr>`:'')+
+    (e.ahl_ee?`<tr><td class="muted">AHL (1.5%)</td><td class="mono" style="text-align:right">${fmt(e.ahl_ee,cur)}</td><td class="mono" style="text-align:right">${fmt(e.ahl_er,cur)}</td></tr>`:'')+
+    (e.sdl?`<tr><td class="muted">SDL (3.5%)</td><td class="mono" style="text-align:right">&mdash;</td><td class="mono" style="text-align:right">${fmt(e.sdl,cur)}</td></tr>`:'')+
+    (e.wcf?`<tr><td class="muted">WCF (0.5%)</td><td class="mono" style="text-align:right">&mdash;</td><td class="mono" style="text-align:right">${fmt(e.wcf,cur)}</td></tr>`:'')+
+    (e.nita_er?`<tr><td class="muted">NITA (KES 50/employee)</td><td class="mono" style="text-align:right">&mdash;</td><td class="mono" style="text-align:right">${fmt(e.nita_er,cur)}</td></tr>`:'')+
+    '</tbody>';
 }
 
 function addEmployee(){
   if(!currentCalc){alert('Run a calculation first.');return;}
   const idx=employees.findIndex(x=>(x.krapin&&x.krapin===currentCalc.krapin)||(x.surname===currentCalc.surname&&x.othernames===currentCalc.othernames));
   if(idx>=0)employees[idx]={...currentCalc};else employees.push({...currentCalc});
-  renderEmployees();renderSummary();switchTab('employees');
+  renderEmployees();renderSummary();checkPaywallReset();switchTab('employees');
 }
 
-const TH=['Emp_No','Surname','Other_Names','KRA_PIN','ID_No','NSSF_No','SHIF_No','Phone','Basic','Allowances','Bonus','HELB','Advance','Loan','NSSF_Type','Month'];
+const TH=['Emp_No','Surname','Other_Names','KRA_PIN','ID_No','NSSF_No','SHIF_No','Phone','Basic','Allowances','Overtime','Bonus','HELB','Advance','Loan','NSSF_Type','Month'];
 const TX=[
-  ['EMP-001','Wanjiku','Jane Auma','A012345678Z','12345678','NS123456','SH789012','0712345678',80000,5000,10000,2000,3000,2000,'full','April 2026'],
-  ['EMP-002','Kamau','John Mwangi','A098765432B','87654321','NS654321','SH210987','0798765432',50000,0,0,0,0,0,'contracted','April 2026'],
-  ['EMP-003','Otieno','Grace','A011223344C','33221100','','','0733445566',35000,0,0,0,0,0,'old','April 2026']
+  ['EMP-001','Wanjiku','Jane Auma','A012345678Z','12345678','NS123456','SH789012','0712345678',80000,5000,2000,10000,2000,3000,2000,'full','April 2026'],
+  ['EMP-002','Kamau','John Mwangi','A098765432B','87654321','NS654321','SH210987','0798765432',50000,0,0,0,0,0,0,'contracted','April 2026'],
+  ['EMP-003','Otieno','Grace','A011223344C','33221100','','','0733445566',35000,0,0,0,0,0,0,'old','April 2026']
 ];
 // NSSF_Type valid values: full | contracted | old
-function downloadTemplate(type){const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet([TH,...TX]);XLSX.utils.book_append_sheet(wb,ws,'Payroll');if(type==='csv'){const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(XLSX.utils.sheet_to_csv(ws));a.download='payroll_template.csv';a.click();}else XLSX.writeFile(wb,'payroll_template.xlsx');}
+function downloadTemplate(type){
+  const wb=XLSX.utils.book_new();
+  // Row 1: Company name label + value cell
+  // Row 2: Company PIN label + value cell
+  // Row 3: blank separator
+  // Row 4: column headers
+  // Row 5+: data
+  const metaRows=[
+    ['Company Name:','Acme Limited','','','','','','','','','','','','','','','','','',''],
+    ['Company PIN/TIN:','P051234567X','','','','','','','','','','','','','','','','','',''],
+    [],
+    TH
+  ];
+  const ws=XLSX.utils.aoa_to_sheet([...metaRows,...TX]);
+  // Style note: row 4 is headers, data from row 5
+  XLSX.utils.book_append_sheet(wb,ws,'Payroll');
+  if(type==='csv'){
+    const a=document.createElement('a');
+    a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(XLSX.utils.sheet_to_csv(ws));
+    a.download='ledja_payroll_template.csv';
+    a.click();
+  }else{
+    XLSX.writeFile(wb,'ledja_payroll_template.xlsx');
+  }
+}
 function handleDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)parseFile(f);}
 function handleFileInput(e){const f=e.target.files[0];if(f)parseFile(f);}
 function parseFile(file){const errEl=document.getElementById('import-errors');errEl.style.display='none';const ext=file.name.split('.').pop().toLowerCase();if(!['csv','xlsx','xls'].includes(ext)){showErr('Unsupported file. Use .csv, .xlsx or .xls');return;}const r=new FileReader();r.onload=ev=>{try{const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});processRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''}));}catch(err){showErr('Could not read file: '+err.message);}};r.readAsArrayBuffer(file);}
 function nh(h){return String(h).trim().toLowerCase().replace(/[\s_\-]+/g,'');}
-const AL={empno:['empno','employeenumber','empid','employeeid','staffid'],surname:['surname','lastname'],othernames:['othernames','othername','givennames','name'],krapin:['krapin','pin','kra'],idno:['idno','id','nationalid'],nssfno:['nssfno','nssf'],shifno:['shifno','shif','sha'],phone:['phone','phonenumber','mobile','tel','telephone'],basic:['basic','basicsalary','basepay','totalcashpay'],allowances:['allowances','allowance'],bonus:['bonus','commission'],helb:['helb'],advance:['advance','salaryadvance'],loan:['loan','loanrepayment'],nssftype:['nssftype'],month:['month','period']};
+const AL={empno:['empno','employeenumber','empid','employeeid','staffid'],surname:['surname','lastname'],othernames:['othernames','othername','givennames','name'],krapin:['krapin','pin','kra'],idno:['idno','id','nationalid'],nssfno:['nssfno','nssf'],shifno:['shifno','shif','sha'],phone:['phone','phonenumber','mobile','tel','telephone'],companyname:['companyname','company','employer','employername'],companypin:['companypin','employerpin','companytin','employertin'],basic:['basic','basicsalary','basepay','totalcashpay'],allowances:['allowances','allowance'],overtime:['overtime','ot'],bonus:['bonus','commission'],helb:['helb'],advance:['advance','salaryadvance'],loan:['loan','loanrepayment'],nssftype:['nssftype'],month:['month','period']};
 function parseNSSFType(v){const s=String(v||'').trim().toLowerCase();if(s==='contracted')return 'contracted';if(s==='old')return 'old';return 'full';}// full = Tier I+II to NSSF, contracted = Tier I NSSF + Tier II pension, old = flat KES 200
-function processRows(rows){if(!rows||rows.length<2){showErr('File has no data rows.');return;}const hMap={};rows[0].forEach((h,i)=>{const n=nh(h);for(const[k,list]of Object.entries(AL)){if(list.includes(n))hMap[k]=i;}});if(hMap.surname===undefined&&hMap.basic===undefined){showErr('Required columns not found.\nExpected: Surname, Basic');return;}const parsed=[],errors=[];for(let i=1;i<rows.length;i++){const r=rows[i];if(r.every(c=>c===''||c===null||c===undefined))continue;const surname=hMap.surname!==undefined?String(r[hMap.surname]||'').trim():'';const basic=parseFloat(r[hMap.basic])||0;if(!surname){errors.push(`Row ${i+1}: missing surname`);continue;}if(!basic){errors.push(`Row ${i+1} (${surname}): Basic is 0 or missing`);continue;}parsed.push({empid:hMap.empno!==undefined?String(r[hMap.empno]||'').trim():'',surname,othernames:hMap.othernames!==undefined?String(r[hMap.othernames]||'').trim():'',basic,krapin:hMap.krapin!==undefined?String(r[hMap.krapin]||'').trim():'',idno:hMap.idno!==undefined?String(r[hMap.idno]||'').trim():'',nssfno:hMap.nssfno!==undefined?String(r[hMap.nssfno]||'').trim():'',shifno:hMap.shifno!==undefined?String(r[hMap.shifno]||'').trim():'',phone:hMap.phone!==undefined?String(r[hMap.phone]||'').trim():'',allowances:hMap.allowances!==undefined?parseFloat(r[hMap.allowances])||0:0,bonus:hMap.bonus!==undefined?parseFloat(r[hMap.bonus])||0:0,helb:hMap.helb!==undefined?parseFloat(r[hMap.helb])||0:0,advance:hMap.advance!==undefined?parseFloat(r[hMap.advance])||0:0,loan:hMap.loan!==undefined?parseFloat(r[hMap.loan])||0:0,nssfType:hMap.nssftype!==undefined?parseNSSFType(r[hMap.nssftype]):'full',month:hMap.month!==undefined?String(r[hMap.month]||'').trim():''});}if(errors.length)showErr('Skipped:\n'+errors.join('\n'));if(!parsed.length){showErr('No valid rows found.');return;}pendingImport=parsed;document.getElementById('preview-table-wrap').innerHTML='<table class="data-table"><thead><tr><th>Emp No</th><th>Surname</th><th>Other Names</th><th>KRA PIN</th><th>Basic</th><th>NSSF Type</th></tr></thead><tbody>'+parsed.map(e=>`<tr><td class="mono">${e.empid||'&mdash;'}</td><td>${e.surname}</td><td>${e.othernames||'&mdash;'}</td><td class="mono">${e.krapin||'&mdash;'}</td><td class="mono">${fmt(e.basic)}</td><td class="mono">${e.nssfType}</td></tr>`).join('')+'</tbody></table>';document.getElementById('import-preview').style.display='block';}
-function confirmImport(){let a=0,u=0;pendingImport.forEach(d=>{const e=compute(d);const idx=employees.findIndex(x=>(x.krapin&&x.krapin===e.krapin)||(x.surname===e.surname&&x.othernames===e.othernames));if(idx>=0){employees[idx]=e;u++;}else{employees.push(e);a++;}});pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';renderEmployees();renderSummary();switchTab('employees');setTimeout(()=>alert(`Imported: ${a} new, ${u} updated.`),100);}
+function processRows(rows){
+  if(!rows||rows.length<2){showErr('File has no data rows.');return;}
+  // Extract company metadata from rows 1-2 if present
+  let fileCompany='',fileCompanyPin='';
+  if(rows[0]&&String(rows[0][0]||'').toLowerCase().includes('company name')){fileCompany=String(rows[0][1]||'').trim();}
+  if(rows[1]&&String(rows[1][0]||'').toLowerCase().includes('company pin')){fileCompanyPin=String(rows[1][1]||'').trim();}
+  // Find header row - look for 'surname' or 'empno' in any of first 6 rows
+  let headerRowIdx=0;
+  for(let i=0;i<Math.min(rows.length,6);i++){
+    if(rows[i].some(c=>nh(String(c||'')).includes('surname')||nh(String(c||'')).includes('empno'))){headerRowIdx=i;break;}
+  }
+  const hMap={};
+  rows[headerRowIdx].forEach((h,i)=>{const n=nh(h);for(const[k,list]of Object.entries(AL)){if(list.includes(n))hMap[k]=i;}});
+  if(hMap.surname===undefined&&hMap.basic===undefined){showErr('Required columns not found.\nExpected: Surname, Basic');return;}
+  const parsed=[],errors=[];
+  for(let i=headerRowIdx+1;i<rows.length;i++){
+    const r=rows[i];
+    if(r.every(c=>c===''||c===null||c===undefined))continue;
+    const surname=hMap.surname!==undefined?String(r[hMap.surname]||'').trim():'';
+    const basic=parseFloat(r[hMap.basic])||0;
+    if(!surname){errors.push(`Row ${i+1}: missing surname`);continue;}
+    if(!basic){errors.push(`Row ${i+1} (${surname}): Basic is 0 or missing`);continue;}
+    parsed.push({
+      empid:hMap.empno!==undefined?String(r[hMap.empno]||'').trim():'',
+      surname,othernames:hMap.othernames!==undefined?String(r[hMap.othernames]||'').trim():'',
+      basic,krapin:hMap.krapin!==undefined?String(r[hMap.krapin]||'').trim():'',
+      idno:hMap.idno!==undefined?String(r[hMap.idno]||'').trim():'',
+      nssfno:hMap.nssfno!==undefined?String(r[hMap.nssfno]||'').trim():'',
+      shifno:hMap.shifno!==undefined?String(r[hMap.shifno]||'').trim():'',
+      phone:hMap.phone!==undefined?String(r[hMap.phone]||'').trim():'',
+      importedCompany:fileCompany,importedCompanyPin:fileCompanyPin,
+      allowances:hMap.allowances!==undefined?parseFloat(r[hMap.allowances])||0:0,
+      overtime:hMap.overtime!==undefined?parseFloat(r[hMap.overtime])||0:0,
+      bonus:hMap.bonus!==undefined?parseFloat(r[hMap.bonus])||0:0,
+      helb:hMap.helb!==undefined?parseFloat(r[hMap.helb])||0:0,
+      advance:hMap.advance!==undefined?parseFloat(r[hMap.advance])||0:0,
+      loan:hMap.loan!==undefined?parseFloat(r[hMap.loan])||0:0,
+      nssfType:hMap.nssftype!==undefined?parseNSSFType(r[hMap.nssftype]):'full',
+      month:hMap.month!==undefined?String(r[hMap.month]||'').trim():''
+    });
+  }
+  if(errors.length)showErr('Skipped:\n'+errors.join('\n'));
+  if(!parsed.length){showErr('No valid rows found.');return;}
+  pendingImport=parsed;
+  const cur=COUNTRIES[activeCountry].currency;
+  document.getElementById('preview-table-wrap').innerHTML=
+    (fileCompany?`<p style="font-size:0.75rem;color:var(--amber);font-family:var(--font-mono);margin-bottom:8px">📋 ${fileCompany}${fileCompanyPin?' &middot; PIN: '+fileCompanyPin:''}</p>`:'')
+    +'<table class="data-table"><thead><tr><th>Emp No</th><th>Surname</th><th>Other Names</th><th style="text-align:right">Basic</th><th style="text-align:right">Additions</th><th style="text-align:right">Deductions</th><th>Month</th></tr></thead><tbody>'
+    +parsed.map(e=>{
+      const additions=(e.allowances||0)+(e.bonus||0)+(e.overtime||0);
+      const deductions=(e.helb||0)+(e.advance||0)+(e.loan||0);
+      return `<tr>
+        <td class="mono">${e.empid||'&mdash;'}</td>
+        <td>${e.surname}</td>
+        <td>${e.othernames||'&mdash;'}</td>
+        <td class="mono" style="text-align:right">${fmt(e.basic,cur)}</td>
+        <td class="mono" style="text-align:right">${additions?fmt(additions,cur):'&mdash;'}</td>
+        <td class="mono" style="text-align:right">${deductions?fmt(deductions,cur):'&mdash;'}</td>
+        <td class="mono">${e.month||'&mdash;'}</td>
+      </tr>`;
+    }).join('')
+    +'</tbody></table>';
+  document.getElementById('import-preview').style.display='block';
+}
+function confirmImport(){let a=0,u=0;let importedCo='',importedCoPin='';pendingImport.forEach(d=>{const e=computeForCountry(d,activeCountry);if(!importedCo&&d.importedCompany)importedCo=d.importedCompany;if(!importedCoPin&&d.importedCompanyPin)importedCoPin=d.importedCompanyPin;const idx=employees.findIndex(x=>(x.krapin&&x.krapin===e.krapin)||(x.surname===e.surname&&x.othernames===e.othernames));if(idx>=0){employees[idx]=e;u++;}else{employees.push(e);a++;}});pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';if(importedCo&&!document.getElementById('c-company').value){document.getElementById('c-company').value=importedCo;companyName=importedCo;}if(importedCoPin&&!document.getElementById('c-company-pin').value){document.getElementById('c-company-pin').value=importedCoPin;companyPin=importedCoPin;}renderEmployees();renderSummary();checkPaywallReset();switchTab('employees');setTimeout(()=>alert(`Imported: ${a} new, ${u} updated.`),100);}
 function cancelImport(){pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';}
 function showErr(m){const el=document.getElementById('import-errors');el.style.display='block';el.textContent=m;}
 
@@ -767,18 +1356,62 @@ function viewPayslip(){if(!currentCalc)return;renderPayslip(currentCalc);switchT
 function renderPayslip(e){
   document.getElementById('payslip-empty').style.display='none';
   document.getElementById('payslip-btns').style.display='flex';
-  document.getElementById('payslip-view').innerHTML=`<div class="payslip-wrap"><div class="payslip-header"><div><div style="font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--white-dim);margin-bottom:8px">Payslip</div><div class="payslip-name">${e.surname},<br>${e.othernames||''}</div><div class="payslip-meta" style="margin-top:10px">${e.krapin?'KRA PIN: '+e.krapin+'<br>':''}${e.idno?'ID No: '+e.idno+'<br>':''}${e.empid?'Emp ID: '+e.empid+'<br>':''}${e.nssfno?'NSSF: '+e.nssfno+'<br>':''}${e.shifno?'SHIF: '+e.shifno:''}</div></div><div class="payslip-month">${e.month||'Month N/A'}</div></div><div class="payslip-body"><div class="payslip-section"><div class="payslip-section-label">Earnings</div><table class="data-table"><tr><td class="muted">Basic pay</td><td class="mono">${fmt(e.basic)}</td></tr>${e.allowances?`<tr><td class="muted">Allowances</td><td class="mono">${fmt(e.allowances)}</td></tr>`:''}${e.bonus?`<tr><td class="muted">Bonus / commission</td><td class="mono">${fmt(e.bonus)}</td></tr>`:''}<tr class="total-row"><td>Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">Statutory deductions</div><table class="data-table"><tr><td class="muted">PAYE (income tax)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.paye)}</td></tr><tr><td class="muted">SHIF (2.75%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.shif)}</td></tr>${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employee (→ NSSF)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.nssf_ee)}</td></tr><tr><td class="muted">NSSF Tier II employee (→ Pension Fund)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.pension_ee)}</td></tr>`:`<tr><td class="muted">NSSF employee share</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.employee)}</td></tr>`}<tr><td class="muted">Affordable Housing Levy (1.5%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.ahl_ee)}</td></tr>${e.helb?`<tr><td class="muted">HELB repayment</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.helb)}</td></tr>`:''}<tr class="total-row"><td>Total statutory</td><td class="mono">&ndash; ${fmt(e.statutoryDeductions)}</td></tr></table></div>${(e.advance+e.loan)?`<div class="payslip-section"><div class="payslip-section-label">Loan &amp; advance recovery</div><table class="data-table">${e.advance?`<tr><td class="muted">Salary advance recovery</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.advance)}</td></tr>`:''}${e.loan?`<tr><td class="muted">Staff loan repayment</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.loan)}</td></tr>`:''}</table></div>`:''}<div class="payslip-section"><div class="payslip-section-label">Employer contributions</div><table class="data-table">${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employer (→ NSSF)</td><td class="mono">${fmt(e.nssf.nssf_er)}</td></tr><tr><td class="muted">NSSF Tier II employer (→ Pension Fund)</td><td class="mono">${fmt(e.nssf.pension_er)}</td></tr>`:`<tr><td class="muted">NSSF employer share</td><td class="mono">${fmt(e.nssf.employer)}</td></tr>`}<tr><td class="muted">AHL employer share (1.5%)</td><td class="mono">${fmt(e.ahl_er)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">PAYE computation</div><table class="data-table"><tr><td class="muted">Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr><tr><td class="muted">Pre-PAYE deductions (SHIF+AHL+NSSF)</td><td class="mono">&ndash; ${fmt(e.shif+e.ahl_ee+e.nssf.employee)}</td></tr><tr><td class="muted">Taxable income</td><td class="mono">${fmt(e.taxableIncome)}</td></tr><tr><td class="muted">Personal relief</td><td class="mono">&ndash; KES 2,400</td></tr></table></div><div class="payslip-net"><div><div class="payslip-net-label">Net pay</div></div><div class="payslip-net-value">${fmt(e.net)}</div></div></div></div>`;
+  document.getElementById('payslip-view').innerHTML=`<div class="payslip-wrap"><div class="payslip-header"><div><div style="font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--white-dim);margin-bottom:4px">Payslip</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-bottom:4px">${getCompany()}</div><div class="payslip-name">${e.surname},<br>${e.othernames||''}</div><div class="payslip-meta" style="margin-top:10px">${e.krapin?'KRA PIN: '+e.krapin+'<br>':''}${e.idno?'ID No: '+e.idno+'<br>':''}${e.empid?'Emp ID: '+e.empid+'<br>':''}${e.nssfno?'NSSF: '+e.nssfno+'<br>':''}${e.shifno?'SHIF: '+e.shifno:''}</div></div><div class="payslip-month">${e.month||'Month N/A'}</div></div><div class="payslip-body"><div class="payslip-section"><div class="payslip-section-label">Earnings</div><table class="data-table"><tr><td class="muted">Basic pay</td><td class="mono">${fmt(e.basic)}</td></tr>${e.allowances?`<tr><td class="muted">Allowances</td><td class="mono">${fmt(e.allowances)}</td></tr>`:''}${e.bonus?`<tr><td class="muted">Bonus / commission</td><td class="mono">${fmt(e.bonus)}</td></tr>`:''}<tr class="total-row"><td>Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">Statutory deductions</div><table class="data-table"><tr><td class="muted">PAYE (income tax)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.paye)}</td></tr><tr><td class="muted">SHIF (2.75%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.shif)}</td></tr>${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employee (→ NSSF)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.nssf_ee)}</td></tr><tr><td class="muted">NSSF Tier II employee (→ Pension Fund)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.pension_ee)}</td></tr>`:`<tr><td class="muted">NSSF employee share</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf.employee)}</td></tr>`}<tr><td class="muted">Affordable Housing Levy (1.5%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.ahl_ee)}</td></tr>${e.helb?`<tr><td class="muted">HELB repayment</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.helb)}</td></tr>`:''}<tr class="total-row"><td>Total statutory</td><td class="mono">&ndash; ${fmt(e.statutoryDeductions)}</td></tr></table></div>${(e.advance+e.loan)?`<div class="payslip-section"><div class="payslip-section-label">Loan &amp; advance recovery</div><table class="data-table">${e.advance?`<tr><td class="muted">Salary advance recovery</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.advance)}</td></tr>`:''}${e.loan?`<tr><td class="muted">Staff loan repayment</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.loan)}</td></tr>`:''}</table></div>`:''}<div class="payslip-section"><div class="payslip-section-label">Employer contributions</div><table class="data-table">${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employer (→ NSSF)</td><td class="mono">${fmt(e.nssf.nssf_er)}</td></tr><tr><td class="muted">NSSF Tier II employer (→ Pension Fund)</td><td class="mono">${fmt(e.nssf.pension_er)}</td></tr>`:`<tr><td class="muted">NSSF employer share</td><td class="mono">${fmt(e.nssf.employer)}</td></tr>`}<tr><td class="muted">AHL employer share (1.5%)</td><td class="mono">${fmt(e.ahl_er)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">PAYE computation</div><table class="data-table"><tr><td class="muted">Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr><tr><td class="muted">Pre-PAYE deductions (SHIF+AHL+NSSF)</td><td class="mono">&ndash; ${fmt(e.shif+e.ahl_ee+e.nssf.employee)}</td></tr><tr><td class="muted">Taxable income</td><td class="mono">${fmt(e.taxableIncome)}</td></tr><tr><td class="muted">Personal relief</td><td class="mono">&ndash; KES 2,400</td></tr></table></div><div class="payslip-net"><div><div class="payslip-net-label">Net pay</div></div><div class="payslip-net-value">${fmt(e.net)}</div></div></div></div>`;
 }
 
 function renderSummary(){
   const el=document.getElementById('summary-content');
   if(!employees.length){el.innerHTML='<div class="card"><div class="empty-state"><div class="empty-state-icon">&#128202;</div><p>Add employees to see summary.</p></div></div>';return;}
-  const t=employees.reduce((a,e)=>({gross:a.gross+e.gross,paye:a.paye+e.paye,shif:a.shif+e.shif,nssf_ee:a.nssf_ee+e.nssf.employee,nssf_er:a.nssf_er+e.nssf.employer,ahl_ee:a.ahl_ee+e.ahl_ee,ahl_er:a.ahl_er+e.ahl_er,helb:a.helb+(e.helb||0),advance:a.advance+(e.advance||0),loan:a.loan+(e.loan||0),net:a.net+e.net}),{gross:0,paye:0,shif:0,nssf_ee:0,nssf_er:0,ahl_ee:0,ahl_er:0,helb:0,advance:0,loan:0,net:0});
-  const totalRem=t.paye+t.shif+t.nssf_ee+t.nssf_er+t.ahl_ee+t.ahl_er+t.helb;
-  el.innerHTML=`<div class="metrics-row"><div class="metric"><div class="metric-label">Employees</div><div class="metric-value">${employees.length}</div></div><div class="metric"><div class="metric-label">Total gross</div><div class="metric-value">${fmt(t.gross)}</div></div><div class="metric red"><div class="metric-label">Total PAYE</div><div class="metric-value">${fmt(t.paye)}</div></div><div class="metric green"><div class="metric-label">Total net pay</div><div class="metric-value">${fmt(t.net)}</div></div></div><div class="card"><div class="card-header"><div class="card-dot"></div><div class="card-title">Statutory remittances</div></div><div class="rem-row"><span>PAYE &rarr; KRA iTax<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.paye)}</span></div><div class="rem-row"><span>SHIF &rarr; SHA portal<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.shif)}</span></div><div class="rem-row"><span>NSSF ee+er &rarr; eCitizen<span class="rem-due">15th</span></span><span class="rem-amount">${fmt(t.nssf_ee+t.nssf_er)}</span></div><div class="rem-row"><span>AHL ee+er &rarr; Housing Fund<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.ahl_ee+t.ahl_er)}</span></div>${t.helb?`<div class="rem-row"><span>HELB &rarr; HELB Authority<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.helb)}</span></div>`:''}<div class="rem-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:12px;font-weight:600"><span>Total remittances</span><span class="rem-amount">${fmt(totalRem)}</span></div></div>${(t.advance+t.loan)?`<div class="card"><div class="card-header"><div class="card-dot"></div><div class="card-title">Loan &amp; advance recoveries</div></div>${t.advance?`<div class="rem-row"><span>Advance recovery</span><span class="rem-amount">${fmt(t.advance)}</span></div>`:''}${t.loan?`<div class="rem-row"><span>Loan repayments</span><span class="rem-amount">${fmt(t.loan)}</span></div>`:''}<div class="rem-row" style="font-weight:600"><span>Total</span><span class="rem-amount">${fmt(t.advance+t.loan)}</span></div></div>`:''}`;
-}
+  const t=employees.reduce((a,e)=>({
+    gross:a.gross+e.gross, paye:a.paye+e.paye,
+    shif:a.shif+(e.shif||0), nssf_ee:a.nssf_ee+(e.nssf_ee||e.nssf?.employee||0),
+    nssf_er:a.nssf_er+(e.nssf_er||e.nssf?.employer||0),
+    ahl_ee:a.ahl_ee+(e.ahl_ee||0), ahl_er:a.ahl_er+(e.ahl_er||0),
+    nita_er:a.nita_er+(e.nita_er||0),
+    helb:a.helb+(e.helb||0), advance:a.advance+(e.advance||0),
+    loan:a.loan+(e.loan||0), net:a.net+e.net,
+    sdl:a.sdl+(e.sdl||0), wcf:a.wcf+(e.wcf||0),
+    pension_ee:a.pension_ee+(e.pension_ee||0), pension_er:a.pension_er+(e.pension_er||0),
+    maternity_ee:a.maternity_ee+(e.maternity_ee||0), maternity_er:a.maternity_er+(e.maternity_er||0)
+  }),{gross:0,paye:0,shif:0,nssf_ee:0,nssf_er:0,ahl_ee:0,ahl_er:0,nita_er:0,helb:0,advance:0,loan:0,net:0,sdl:0,wcf:0,pension_ee:0,pension_er:0,maternity_ee:0,maternity_er:0});
+  const cur = employees[0]?.currency || COUNTRIES[activeCountry].currency;
+  const totalRem = t.paye + t.shif + t.nssf_ee + t.nssf_er + t.ahl_ee + t.ahl_er + t.nita_er + t.helb + t.sdl + t.wcf + t.pension_ee + t.pension_er + t.maternity_ee + t.maternity_er;
+  const mCard=(label,val,cls='red')=>val?`<div class="metric ${cls}"><div class="metric-label">${label}</div><div class="metric-value">${fmt(val,cur)}</div></div>`:'';
+  const country=employees[0]?.countryCode||activeCountry;
+  const nssfLabel=country==='rw'?'RSSB Pension':country==='tz'?'NSSF (10%)':country==='ug'?'NSSF (5%+10%)':'NSSF';
+  const shifLabel=country==='ke'?'Total SHIF':null;
+  const ahlLabel=country==='ke'?'Total AHL':country==='rw'?'Maternity':null;
+  const nitaLabel=country==='ke'?'NITA (KES 50/ee)':country==='tz'?'SDL (er)':null;
+  el.innerHTML=`
+    <div class="metrics-row">
+      <div class="metric"><div class="metric-label">Employees</div><div class="metric-value">${employees.length}</div></div>
+      <div class="metric"><div class="metric-label">Total gross</div><div class="metric-value">${fmt(t.gross,cur)}</div></div>
+      <div class="metric red"><div class="metric-label">Total PAYE</div><div class="metric-value">${fmt(t.paye,cur)}</div></div>
+      ${shifLabel?mCard(shifLabel,t.shif):''}
+      ${mCard(nssfLabel,t.nssf_ee+t.nssf_er+t.pension_ee+t.pension_er)}
+      ${ahlLabel?mCard(ahlLabel,t.ahl_ee+t.ahl_er+t.maternity_ee+t.maternity_er):''}
+      ${nitaLabel?mCard(nitaLabel,t.nita_er+t.sdl,'amber'):''}
+      ${mCard('WCF (er)',t.wcf,'amber')}
+      <div class="metric green"><div class="metric-label">Total net pay</div><div class="metric-value">${fmt(t.net,cur)}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-dot"></div><div class="card-title">Statutory remittances</div></div>
+      <div class="rem-row"><span>PAYE &rarr; KRA iTax<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.paye,cur)}</span></div>
+      ${t.shif?`<div class="rem-row"><span>SHIF &rarr; SHA portal<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.shif,cur)}</span></div>`:''}
+      ${(t.nssf_ee+t.nssf_er)?`<div class="rem-row"><span>NSSF ee+er &rarr; eCitizen<span class="rem-due">15th</span></span><span class="rem-amount">${fmt(t.nssf_ee+t.nssf_er,cur)}</span></div>`:''}
+      ${(t.ahl_ee+t.ahl_er)?`<div class="rem-row"><span>AHL ee+er &rarr; Housing Fund<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.ahl_ee+t.ahl_er,cur)}</span></div>`:''}
+      ${t.nita_er?`<div class="rem-row"><span>NITA &rarr; NITA portal<span class="rem-due">15th</span></span><span class="rem-amount">${fmt(t.nita_er,cur)}</span></div>`:''}
+      ${t.helb?`<div class="rem-row"><span>HELB &rarr; HELB Authority<span class="rem-due">9th</span></span><span class="rem-amount">${fmt(t.helb,cur)}</span></div>`:''}
+      ${(t.pension_ee+t.pension_er)?`<div class="rem-row"><span>RSSB Pension ee+er &rarr; RSSB<span class="rem-due">15th</span></span><span class="rem-amount">${fmt(t.pension_ee+t.pension_er,cur)}</span></div>`:''}
+      ${(t.maternity_ee+t.maternity_er)?`<div class="rem-row"><span>Maternity ee+er &rarr; RSSB<span class="rem-due">15th</span></span><span class="rem-amount">${fmt(t.maternity_ee+t.maternity_er,cur)}</span></div>`:''}
+      ${t.sdl?`<div class="rem-row"><span>SDL &rarr; TRA<span class="rem-due">7th</span></span><span class="rem-amount">${fmt(t.sdl,cur)}</span></div>`:''}
+      ${t.wcf?`<div class="rem-row"><span>WCF &rarr; WCF Authority<span class="rem-due">7th</span></span><span class="rem-amount">${fmt(t.wcf,cur)}</span></div>`:''}
+      <div class="rem-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:12px;font-weight:600"><span>Total remittances</span><span class="rem-amount">${fmt(totalRem,cur)}</span></div>
+    </div>
+    ${(t.advance+t.loan)?`<div class="card"><div class="card-header"><div class="card-dot"></div><div class="card-title">Loan &amp; advance recoveries</div></div>${t.advance?`<div class="rem-row"><span>Advance recovery</span><span class="rem-amount">${fmt(t.advance,cur)}</span></div>`:''}${t.loan?`<div class="rem-row"><span>Loan repayments</span><span class="rem-amount">${fmt(t.loan,cur)}</span></div>`:''}<div class="rem-row" style="font-weight:600"><span>Total</span><span class="rem-amount">${fmt(t.advance+t.loan,cur)}</span></div></div>`:''}
+  `;}
 
-function exportKRApaye(){if(!employees.length){alert('No employees loaded.');return;}const rows=employees.map(e=>[e.krapin||'',`${e.surname} ${e.othernames||''}`.trim(),'Resident','Primary Employee','NO','',n2(e.gross),0,0,0,'Benefit Not given','',0,'',n2(e.shif),n2(e.nssf.employee),0,0,0,n2(e.ahl_ee),'',2400,0,'',n2(e.paye)]);const csv=rows.map(r=>r.map(v=>typeof v==='string'&&v.includes(',')? `"${v}"` : v).join(',')).join('\r\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`KRA_PAYE_iTax_${(employees[0].month||'payroll').replace(/ /g,'_')}.csv`;a.click();}
+function exportKRApaye(){if(!employees.length){alert('No employees loaded.');return;}const rows=employees.map(e=>[e.krapin||'',`${e.surname} ${e.othernames||''}`.trim(),'Resident','Primary Employee','NO','',n2(e.gross),0,0,0,'Benefit Not given','',0,'',n2(e.shif),n2(e.nssf.employee),0,0,0,n2(e.ahl_ee),'',2400,0,'',n2(e.paye)]);const csv=rows.map(r=>r.map(v=>typeof v==='string'&&v.includes(',')? `"${v}"` : v).join(',')).join('\r\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=exportFilename('KRA-PAYE-iTax', employees[0]?.month)+'.csv';a.click();}
 
 function col(n){return XLSX.utils.encode_col(n);}
 function xs(ws,cell,val,bold,bg,fc,nf,al){if(!ws[cell])ws[cell]={};const isN=typeof val==='number';ws[cell].v=val;ws[cell].t=isN?'n':'s';if(nf)ws[cell].z=nf;ws[cell].s={font:{bold:!!bold,color:{rgb:fc||'000000'},name:'Arial',sz:10},fill:{fgColor:{rgb:bg||'FFFFFF'},patternType:'solid'},alignment:{horizontal:al||(isN?'right':'left'),vertical:'center'},border:{top:{style:'thin'},bottom:{style:'thin'},left:{style:'thin'},right:{style:'thin'}}};}
@@ -788,16 +1421,411 @@ function xstr(ws,c,v,b,bg){xs(ws,c,v,b,bg||'FFFFFF','000000',null,'left');}
 
 
 
-function exportSHIF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const cols=['PAYROLL NUMBER','FIRSTNAME','LASTNAME','IDENTITY TYPE','ID NO','KRA PIN','SHIF NO','CONTRIBUTION AMOUNT','PHONE'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.othernames||'');xstr(ws,col(2)+r,e.surname||'');xstr(ws,col(3)+r,'National ID');xstr(ws,col(4)+r,e.idno||'');xstr(ws,col(5)+r,e.krapin||'');xstr(ws,col(6)+r,e.shifno||'');xn(ws,col(7)+r,e.shif);xstr(ws,col(8)+r,e.phone||'');});const tr=employees.length+2;['','TOTALS','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(7)+tr,employees.reduce((a,e)=>a+e.shif,0),true,'E2EFDA');ws['!cols']=[{wch:16},{wch:20},{wch:16},{wch:14},{wch:14},{wch:16},{wch:22},{wch:20},{wch:14}];ws['!rows']=[{hpt:22},...Array(employees.length+1).fill({hpt:18})];ws['!ref']=`A1:${col(8)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'SHIF');XLSX.writeFile(wb,`SHIF_Schedule_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+function exportSHIF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const cols=['PAYROLL NUMBER','FIRSTNAME','LASTNAME','IDENTITY TYPE','ID NO','KRA PIN','SHIF NO','CONTRIBUTION AMOUNT','PHONE'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.othernames||'');xstr(ws,col(2)+r,e.surname||'');xstr(ws,col(3)+r,'National ID');xstr(ws,col(4)+r,e.idno||'');xstr(ws,col(5)+r,e.krapin||'');xstr(ws,col(6)+r,e.shifno||'');xn(ws,col(7)+r,e.shif);xstr(ws,col(8)+r,e.phone||'');});const tr=employees.length+2;['','TOTALS','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(7)+tr,employees.reduce((a,e)=>a+e.shif,0),true,'E2EFDA');ws['!cols']=[{wch:16},{wch:20},{wch:16},{wch:14},{wch:14},{wch:16},{wch:22},{wch:20},{wch:14}];ws['!rows']=[{hpt:22},...Array(employees.length+1).fill({hpt:18})];ws['!ref']=`A1:${col(8)}${employees.length+1}`;XLSX.utils.book_append_sheet(wb,ws,'SHIF');XLSX.writeFile(wb, exportFilename('SHIF-Schedule', month)+'.xlsx');}
 
-function exportPayrollSummary(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const headers=['#','Surname','Other Names','KRA PIN','ID No','Emp ID','NSSF No','SHIF No','Basic','Allowances','Bonus','Gross','PAYE','SHIF','NSSF(ee)','AHL(ee)','HELB','Advance','Loan','Total Deductions','Net Pay'],nc=headers.length;const mg=[{s:{r:0,c:0},e:{r:0,c:nc-1}},{s:{r:1,c:0},e:{r:1,c:nc-1}}];xs(ws,'A1',`MONTHLY PAYROLL SUMMARY — ${month}`,true,'1C3A5E','FFFFFF',null,'center');xs(ws,'A2','Employer copy — confidential',false,'F3F2EF','555555',null,'center');headers.forEach((h,i)=>xh(ws,col(i)+'3',h));employees.forEach((e,i)=>{const r=i+4;[i+1,e.surname,e.othernames||'',e.krapin||'',e.idno||'',e.empid||'',e.nssfno||'',e.shifno||'',e.basic,e.allowances||0,e.bonus||0,e.gross,e.paye,e.shif,e.nssf.employee,e.ahl_ee,e.helb||0,e.advance||0,e.loan||0,e.totalDeductions,e.net].forEach((v,j)=>j<8?xstr(ws,col(j)+r,v):xn(ws,col(j)+r,v));});const tr=employees.length+4;[0,1,2,3,4,5,6,7].forEach(j=>xstr(ws,col(j)+tr,j===1?'TOTALS':'',true,'E2EFDA'));const ks=['basic','allowances','bonus','gross','paye','shif','nssf_ee','ahl_ee','helb','advance','loan','totalDeductions','net'];for(let j=8;j<nc;j++){const k=ks[j-8];const total=employees.reduce((a,e)=>a+({basic:e.basic,allowances:e.allowances||0,bonus:e.bonus||0,gross:e.gross,paye:e.paye,shif:e.shif,nssf_ee:e.nssf.employee,ahl_ee:e.ahl_ee,helb:e.helb||0,advance:e.advance||0,loan:e.loan||0,totalDeductions:e.totalDeductions,net:e.net}[k]||0),0);xn(ws,col(j)+tr,total,true,'E2EFDA');}ws['!merges']=mg;ws['!cols']=[{wch:4},{wch:16},{wch:16},{wch:14},{wch:12},{wch:10},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:13},{wch:12},{wch:12},{wch:11},{wch:11},{wch:11},{wch:11},{wch:11},{wch:15},{wch:13}];ws['!rows']=[{hpt:26},{hpt:18},{hpt:36},...Array(employees.length+2).fill({hpt:18})];ws['!ref']=`A1:${col(nc-1)}${tr+1}`;XLSX.utils.book_append_sheet(wb,ws,'Payroll Summary');XLSX.writeFile(wb,`Payroll_Summary_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+function exportPayrollSummary(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const headers=['#','Surname','Other Names','KRA PIN','ID No','Emp ID','NSSF No','SHIF No','Basic','Allowances','Bonus','Gross','PAYE','SHIF','NSSF(ee)','AHL(ee)','HELB','Advance','Loan','Total Deductions','Net Pay'],nc=headers.length;const mg=[{s:{r:0,c:0},e:{r:0,c:nc-1}},{s:{r:1,c:0},e:{r:1,c:nc-1}}];xs(ws,'A1',`${getCompany()} — MONTHLY PAYROLL SUMMARY — ${month}`,true,'1C3A5E','FFFFFF',null,'center');xs(ws,'A2','Employer copy — confidential',false,'F3F2EF','555555',null,'center');headers.forEach((h,i)=>xh(ws,col(i)+'3',h));employees.forEach((e,i)=>{const r=i+4;[i+1,e.surname,e.othernames||'',e.krapin||'',e.idno||'',e.empid||'',e.nssfno||'',e.shifno||'',e.basic,e.allowances||0,e.bonus||0,e.gross,e.paye,e.shif,e.nssf.employee,e.ahl_ee,e.helb||0,e.advance||0,e.loan||0,e.totalDeductions,e.net].forEach((v,j)=>j<8?xstr(ws,col(j)+r,v):xn(ws,col(j)+r,v));});const tr=employees.length+4;[0,1,2,3,4,5,6,7].forEach(j=>xstr(ws,col(j)+tr,j===1?'TOTALS':'',true,'E2EFDA'));const ks=['basic','allowances','bonus','gross','paye','shif','nssf_ee','ahl_ee','helb','advance','loan','totalDeductions','net'];for(let j=8;j<nc;j++){const k=ks[j-8];const total=employees.reduce((a,e)=>a+({basic:e.basic,allowances:e.allowances||0,bonus:e.bonus||0,gross:e.gross,paye:e.paye,shif:e.shif,nssf_ee:e.nssf.employee,ahl_ee:e.ahl_ee,helb:e.helb||0,advance:e.advance||0,loan:e.loan||0,totalDeductions:e.totalDeductions,net:e.net}[k]||0),0);xn(ws,col(j)+tr,total,true,'E2EFDA');}ws['!merges']=mg;ws['!cols']=[{wch:4},{wch:16},{wch:16},{wch:14},{wch:12},{wch:10},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:13},{wch:12},{wch:12},{wch:11},{wch:11},{wch:11},{wch:11},{wch:11},{wch:15},{wch:13}];ws['!rows']=[{hpt:26},{hpt:18},{hpt:36},...Array(employees.length+2).fill({hpt:18})];ws['!ref']=`A1:${col(nc-1)}${tr+1}`;XLSX.utils.book_append_sheet(wb,ws,'Payroll Summary');XLSX.writeFile(wb, exportFilename('Payroll-Summary', month)+'.xlsx');}
 
-function exportNSSF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','NSSF NO','GROSS PAY','VOLUNTARY'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;const nssfGross=e.nssfType==='contracted'?Math.min(e.gross,NT1):e.nssfType==='old'?0:e.gross;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.nssfno||'');xn(ws,col(6)+r,nssfGross);xn(ws,col(7)+r,0);});const tr=employees.length+2;['','TOTALS','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));const totalGross=employees.reduce((a,e)=>a+(e.nssfType==='contracted'?Math.min(e.gross,NT1):e.nssfType==='old'?0:e.gross),0);xn(ws,col(6)+tr,totalGross,true,'E2EFDA');xn(ws,col(7)+tr,0,true,'E2EFDA');ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:16},{wch:14},{wch:12}];ws['!rows']=[{hpt:22},...Array(employees.length+1).fill({hpt:18})];ws['!ref']=`A1:${col(7)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'NSSF');XLSX.writeFile(wb,`NSSF_Schedule_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+function exportNSSF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','NSSF NO','GROSS PAY','VOLUNTARY'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;const nssfGross=e.nssfType==='contracted'?Math.min(e.gross,NT1):e.nssfType==='old'?0:e.gross;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.nssfno||'');xn(ws,col(6)+r,nssfGross);xn(ws,col(7)+r,0);});ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:16},{wch:14},{wch:12}];ws['!rows']=[{hpt:22},...Array(employees.length).fill({hpt:18})];ws['!ref']=`A1:${col(7)}${employees.length+1}`;XLSX.utils.book_append_sheet(wb,ws,'NSSF');XLSX.writeFile(wb, exportFilename('NSSF-Schedule', month)+'.xlsx');}
 
-function exportPensionFund(){if(!employees.length){alert('No employees loaded.');return;}const contracted=employees.filter(e=>e.nssfType==='contracted'&&e.nssf.pension_ee>0);if(!contracted.length){alert('No contracted-out employees with Tier II contributions found.');return;}const wb=XLSX.utils.book_new(),ws={},month=contracted[0].month||'';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','PENSION MEMBER NO','GROSS PAY','TIER II EMPLOYEE','TIER II EMPLOYER','TOTAL'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));contracted.forEach((e,i)=>{const r=i+2,total=e.nssf.pension_ee+e.nssf.pension_er;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.pensionno||'');xn(ws,col(6)+r,e.gross);xn(ws,col(7)+r,e.nssf.pension_ee);xn(ws,col(8)+r,e.nssf.pension_er);xn(ws,col(9)+r,total);});const tr=contracted.length+2;['','TOTALS','','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(6)+tr,contracted.reduce((a,e)=>a+e.gross,0),true,'E2EFDA');xn(ws,col(7)+tr,contracted.reduce((a,e)=>a+e.nssf.pension_ee,0),true,'E2EFDA');xn(ws,col(8)+tr,contracted.reduce((a,e)=>a+e.nssf.pension_er,0),true,'E2EFDA');xn(ws,col(9)+tr,contracted.reduce((a,e)=>a+e.nssf.pension_ee+e.nssf.pension_er,0),true,'E2EFDA');ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:18},{wch:14},{wch:16},{wch:16},{wch:14}];ws['!rows']=[{hpt:22},...Array(contracted.length+2).fill({hpt:18})];ws['!ref']=`A1:${col(9)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'Pension Fund');XLSX.writeFile(wb,`PensionFund_TierII_${month.replace(/ /g,'_')||'payroll'}.xlsx`);}
+function exportPensionFund(){if(!employees.length){alert('No employees loaded.');return;}const contracted=employees.filter(e=>e.nssfType==='contracted'&&e.nssf.pension_ee>0);if(!contracted.length){alert('No contracted-out employees with Tier II contributions found.');return;}const wb=XLSX.utils.book_new(),ws={},month=contracted[0].month||'';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','PENSION MEMBER NO','GROSS PAY','TIER II EMPLOYEE','TIER II EMPLOYER','TOTAL'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));contracted.forEach((e,i)=>{const r=i+2,total=e.nssf.pension_ee+e.nssf.pension_er;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.pensionno||'');xn(ws,col(6)+r,e.gross);xn(ws,col(7)+r,e.nssf.pension_ee);xn(ws,col(8)+r,e.nssf.pension_er);xn(ws,col(9)+r,total);});const tr=contracted.length+2;['','TOTALS','','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(6)+tr,contracted.reduce((a,e)=>a+e.gross,0),true,'E2EFDA');xn(ws,col(7)+tr,contracted.reduce((a,e)=>a+e.nssf.pension_ee,0),true,'E2EFDA');xn(ws,col(8)+tr,contracted.reduce((a,e)=>a+e.nssf.pension_er,0),true,'E2EFDA');xn(ws,col(9)+tr,contracted.reduce((a,e)=>a+e.nssf.pension_ee+e.nssf.pension_er,0),true,'E2EFDA');ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:18},{wch:14},{wch:16},{wch:16},{wch:14}];ws['!rows']=[{hpt:22},...Array(contracted.length+2).fill({hpt:18})];ws['!ref']=`A1:${col(9)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'Pension Fund');XLSX.writeFile(wb, exportFilename('PensionFund-TierII', month)+'.xlsx');}
 
-function clearAll(){if(!employees.length)return;if(confirm('Clear all employees?')){employees.length=0;renderEmployees();renderSummary();}}
+// ── PAYWALL ───────────────────────────────────────────────────────────────────
+const BACKEND = 'https://ledja-backend.onrender.com';
+const PAYBILL = '600998'; // swap to real Paybill when live
+const FREE_LIMIT = 5;
+const T1_RATE = 15, T1_LIMIT = 100, T2_RATE = 10;
+
+let paywallUnlocked = false;
+let unlockedEmpCount = 0;
+let pendingExportFn = null;
+
+function calcPaywallAmount(emp) {
+  if (emp <= FREE_LIMIT) return 0;
+  if (emp <= T1_LIMIT) return emp * T1_RATE;
+  return (T1_LIMIT * T1_RATE) + ((emp - T1_LIMIT) * T2_RATE);
+}
+
+function pricingNote(emp) {
+  if (emp <= FREE_LIMIT) return 'Free — ≤ 5 employees';
+  if (emp <= T1_LIMIT) return `${emp} employees × KES ${T1_RATE}`;
+  return `100 × KES ${T1_RATE} + ${emp - T1_LIMIT} × KES ${T2_RATE}`;
+}
+
+function normalizePhone(p) {
+  p = p.replace(/\D/g, '');
+  if (p.startsWith('0')) p = '254' + p.slice(1);
+  if (!p.startsWith('254')) p = '254' + p;
+  return p;
+}
+
+function updatePaywallStatus() {
+  const emp = employees.length;
+  const statusText = document.getElementById('paywall-status-text');
+  const unlockBtn = document.getElementById('paywall-unlock-btn');
+  const unlockedBadge = document.getElementById('paywall-unlocked-badge');
+  const detail = document.getElementById('paywall-unlock-detail');
+
+  if (emp === 0) {
+    statusText.textContent = 'Add employees to calculate payment';
+    unlockBtn.style.display = 'none';
+    unlockedBadge.style.display = 'none';
+    return;
+  }
+
+  const amt = calcPaywallAmount(emp);
+
+  if (paywallUnlocked && unlockedEmpCount >= emp) {
+    statusText.textContent = `${emp} employee${emp !== 1 ? 's' : ''} — exports unlocked`;
+    unlockBtn.style.display = 'none';
+    unlockedBadge.style.display = 'inline-flex';
+    detail.textContent = `${emp} employees · ${employees[0]?.month || 'this month'}`;
+  } else if (emp <= FREE_LIMIT) {
+    statusText.textContent = `${emp} employee${emp !== 1 ? 's' : ''} — free tier`;
+    unlockBtn.style.display = 'none';
+    unlockedBadge.style.display = 'inline-flex';
+    detail.textContent = 'free — ≤ 5 employees';
+    paywallUnlocked = true;
+    unlockedEmpCount = emp;
+  } else {
+    const amt = calcPaywallAmount(emp);
+    statusText.textContent = `${emp} employees — KES ${amt.toLocaleString()} to unlock`;
+    unlockBtn.style.display = 'inline-flex';
+    unlockedBadge.style.display = 'none';
+    paywallUnlocked = false;
+  }
+}
+
+function gatedExport(fn) {
+  if (!employees.length) { alert('No employees loaded.'); return; }
+  if (paywallUnlocked && unlockedEmpCount >= employees.length) {
+    fn();
+  } else if (employees.length <= FREE_LIMIT) {
+    paywallUnlocked = true;
+    unlockedEmpCount = employees.length;
+    updatePaywallStatus();
+    fn();
+  } else {
+    pendingExportFn = fn;
+    openPaywall();
+  }
+}
+
+function openPaywall() {
+  const emp = employees.length;
+  const amt = calcPaywallAmount(emp);
+  const isFree = emp <= FREE_LIMIT;
+
+  document.getElementById('modal-emp-summary').textContent = `${getCompany()} · ${emp} employee${emp !== 1 ? 's' : ''} · ${pricingNote(emp)}`;
+  document.getElementById('modal-amount').textContent = `KES ${amt.toLocaleString()}`;
+  document.getElementById('modal-pricing-note').textContent = pricingNote(emp);
+  document.getElementById('step-paybill').textContent = PAYBILL;
+  document.getElementById('modal-paybill').textContent = PAYBILL;
+  document.getElementById('step-amount').textContent = `KES ${amt.toLocaleString()}`;
+  document.getElementById('modal-free').style.display = isFree ? 'block' : 'none';
+  document.getElementById('modal-paid').style.display = isFree ? 'none' : 'block';
+  document.getElementById('pw-submit-btn').textContent = isFree ? 'Unlock free →' : 'Validate & unlock →';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('pw-code').value = '';
+  document.getElementById('pw-phone').value = '';
+  document.getElementById('paywall-modal').style.display = 'flex';
+}
+
+function closePaywall() {
+  document.getElementById('paywall-modal').style.display = 'none';
+  pendingExportFn = null;
+}
+
+async function submitPaywall() {
+  const emp = employees.length;
+  const errEl = document.getElementById('pw-error');
+  errEl.style.display = 'none';
+
+  // Free tier — no validation needed
+  if (emp <= FREE_LIMIT) {
+    paywallUnlocked = true;
+    unlockedEmpCount = emp;
+    updatePaywallStatus();
+    closePaywall();
+    if (pendingExportFn) { pendingExportFn(); pendingExportFn = null; }
+    return;
+  }
+
+  const phone = document.getElementById('pw-phone').value.trim();
+  const code  = document.getElementById('pw-code').value.trim().toUpperCase();
+  const btn   = document.getElementById('pw-submit-btn');
+
+  if (!phone) { showPwError('Enter the M-Pesa phone number you paid from.'); return; }
+  if (!code)  { showPwError('Enter the access code from your SMS.'); return; }
+
+  // Sandbox test credentials
+  const normPhone = normalizePhone(phone);
+  if (normPhone === '254700000000' && code === 'TEST2026') {
+    paywallUnlocked = true;
+    unlockedEmpCount = emp;
+    updatePaywallStatus();
+    closePaywall();
+    if (pendingExportFn) { pendingExportFn(); pendingExportFn = null; }
+    return;
+  }
+
+  btn.textContent = 'Validating...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(`${BACKEND}/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: normalizePhone(phone), code, emp_count: emp })
+    });
+    const data = await r.json();
+
+    if (data.valid) {
+      paywallUnlocked = true;
+      unlockedEmpCount = emp;
+      updatePaywallStatus();
+      closePaywall();
+      if (pendingExportFn) { pendingExportFn(); pendingExportFn = null; }
+    } else {
+      showPwError(data.error || 'Invalid code. Check your SMS and try again.');
+    }
+  } catch(e) {
+    showPwError('Could not reach server. Check your connection and try again.');
+  } finally {
+    btn.textContent = 'Validate & unlock →';
+    btn.disabled = false;
+  }
+}
+
+function showPwError(msg) {
+  const el = document.getElementById('pw-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// Reset paywall if employee count changes beyond unlocked count
+function checkPaywallReset() {
+  if (paywallUnlocked && employees.length > unlockedEmpCount) {
+    paywallUnlocked = false;
+    unlockedEmpCount = 0;
+  }
+  updatePaywallStatus();
+}
+
+function clearAll(){if(!employees.length)return;if(confirm('Clear all employees?')){employees.length=0;paywallUnlocked=false;unlockedEmpCount=0;renderEmployees();renderSummary();updatePaywallStatus();}}
+
+function exportBulkPayslips(){
+  if(!employees.length){alert('No employees loaded.');return;}
+  const month=employees[0].month||'';
+  const fmtP=n=>'KES '+Math.round(n).toLocaleString();
+  const slips=employees.map((e,idx)=>`
+    <div class="payslip-page" ${idx<employees.length-1?'style="page-break-after:always"':''}>
+      <div class="ps-header">
+        <div><div class="ps-brand">Ledja <span>Payroll</span></div><div style='font-size:11px;font-weight:600;color:#1C1917;margin-top:2px'>${getCompany()}</div></div>
+        <div class="ps-month">${e.month||'Month N/A'}</div>
+      </div>
+      <div class="ps-name">${e.surname||''}, ${e.othernames||''}</div>
+      <div class="ps-meta">
+        ${e.krapin?`<span>KRA PIN: ${e.krapin}</span>`:''}
+        ${e.idno?`<span>ID: ${e.idno}</span>`:''}
+        ${e.empid?`<span>Emp ID: ${e.empid}</span>`:''}
+        ${e.nssfno?`<span>NSSF: ${e.nssfno}</span>`:''}
+        ${e.shifno?`<span>SHIF: ${e.shifno}</span>`:''}
+      </div>
+      <table class="ps-table">
+        <thead><tr><th colspan="2">Earnings</th></tr></thead>
+        <tbody>
+          <tr><td>Basic pay</td><td>${fmtP(e.basic)}</td></tr>
+          ${e.allowances?`<tr><td>Allowances</td><td>${fmtP(e.allowances)}</td></tr>`:''}
+          ${e.bonus?`<tr><td>Bonus / commission</td><td>${fmtP(e.bonus)}</td></tr>`:''}
+          <tr class="subtotal"><td>Gross pay</td><td>${fmtP(e.gross)}</td></tr>
+        </tbody>
+      </table>
+      <table class="ps-table">
+        <thead><tr><th colspan="2">Statutory deductions</th></tr></thead>
+        <tbody>
+          <tr><td>PAYE (income tax)</td><td class="ded">– ${fmtP(e.paye)}</td></tr>
+          ${e.shif?`<tr><td>SHIF (2.75%)</td><td class="ded">– ${fmtP(e.shif)}</td></tr>`:''}
+          ${e.nssf_ee?`<tr><td>NSSF employee</td><td class="ded">– ${fmtP(e.nssf_ee)}</td></tr>`:''}
+          ${e.ahl_ee?`<tr><td>Affordable Housing Levy (1.5%)</td><td class="ded">– ${fmtP(e.ahl_ee)}</td></tr>`:''}
+          ${e.pension_ee?`<tr><td>RSSB Pension (6%)</td><td class="ded">– ${fmtP(e.pension_ee)}</td></tr>`:''}
+          ${e.maternity_ee?`<tr><td>Maternity (0.3%)</td><td class="ded">– ${fmtP(e.maternity_ee)}</td></tr>`:''}
+          ${e.helb?`<tr><td>HELB repayment</td><td class="ded">– ${fmtP(e.helb)}</td></tr>`:''}
+          <tr class="subtotal"><td>Total statutory deductions</td><td>– ${fmtP(e.statutoryDeductions)}</td></tr>
+        </tbody>
+      </table>
+      ${(e.advance||e.loan)?`
+      <table class="ps-table">
+        <thead><tr><th colspan="2">Loan &amp; advance recovery</th></tr></thead>
+        <tbody>
+          ${e.advance?`<tr><td>Salary advance recovery</td><td class="ded">– ${fmtP(e.advance)}</td></tr>`:''}
+          ${e.loan?`<tr><td>Staff loan repayment</td><td class="ded">– ${fmtP(e.loan)}</td></tr>`:''}
+        </tbody>
+      </table>`:''}
+      <table class="ps-table">
+        <thead><tr><th colspan="2">Employer contributions</th></tr></thead>
+        <tbody>
+          ${e.nssf&&e.nssf.employer?`<tr><td>NSSF employer share</td><td>${fmtP(e.nssf.employer)}</td></tr>`:''}
+          ${e.ahl_er?`<tr><td>AHL employer share (1.5%)</td><td>${fmtP(e.ahl_er)}</td></tr>`:''}
+          ${e.pension_er?`<tr><td>RSSB Pension employer (6%)</td><td>${fmtP(e.pension_er)}</td></tr>`:''}
+          ${e.occ_er?`<tr><td>Occ. Hazard employer (2%)</td><td>${fmtP(e.occ_er)}</td></tr>`:''}
+        </tbody>
+      </table>
+      <div class="ps-net"><span>Net pay</span><span>${fmtP(e.net)}</span></div>
+      <div class="ps-footer">Generated by Ledja Payroll &middot; ledja.co.ke &middot; ${new Date().toLocaleDateString('en-KE')}</div>
+    </div>`).join('');
+
+  const html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>Payslips — ${getCompany()} — ${month}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;font-size:12px;color:#1C1917;background:#fff}
+.payslip-page{padding:32px;max-width:640px;margin:0 auto}
+.ps-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #B45309}
+.ps-brand{font-size:20px;font-weight:700;color:#1C1917}
+.ps-brand span{color:#B45309}
+.ps-month{font-size:11px;font-family:monospace;background:#FEF3C7;border:1px solid #FCD34D;border-radius:4px;padding:4px 10px;color:#92400E;font-weight:600}
+.ps-name{font-size:18px;font-weight:700;margin-bottom:6px}
+.ps-meta{font-size:10px;color:#6B7280;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:6px}
+.ps-meta span{background:#F9FAFB;border:1px solid #E5E7EB;border-radius:3px;padding:2px 7px;font-family:monospace}
+.ps-table{width:100%;border-collapse:collapse;margin-bottom:12px}
+.ps-table thead tr{background:#1C3A5E}
+.ps-table thead th{color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;padding:7px 10px;text-align:left;font-weight:600}
+.ps-table thead th:last-child{text-align:right}
+.ps-table td{padding:6px 10px;border-bottom:1px solid #F3F4F6;font-size:12px}
+.ps-table td:last-child{text-align:right;font-family:monospace}
+.ps-table tr.subtotal td{font-weight:700;border-top:1px solid #D1D5DB;border-bottom:2px solid #D1D5DB;background:#F9FAFB}
+.ps-table td.ded{color:#B91C1C}
+.ps-net{display:flex;justify-content:space-between;align-items:center;background:#1C3A5E;color:#fff;padding:14px 16px;border-radius:6px;margin-bottom:12px}
+.ps-net span:first-child{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7}
+.ps-net span:last-child{font-size:20px;font-weight:700;font-family:monospace;color:#FCD34D}
+.ps-footer{font-size:9px;color:#9CA3AF;text-align:center;padding-top:8px;border-top:1px solid #F3F4F6}
+@media print{.payslip-page{padding:20px;max-width:100%}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>${slips}<script>window.onload=()=>window.print();<\/script></body></html>`;
+
+  const w=window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();}
+  else alert('Allow popups to generate bulk payslips.');
+}
+
 function switchTab(name){const names=['calculator','import','employees','payslip','summary','export','about','support'];document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',names[i]===name));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');}
+
+// ── RATINGS ──────────────────────────────────────────────────────────────────
+const BACKEND_RATINGS = 'https://ledja-backend.onrender.com';
+let ratingValue = 0;
+let ratingsCache = [];
+
+function openRatingModal() {
+  document.getElementById('rating-modal').style.display = 'flex';
+  const hasRated = localStorage.getItem('ledja_rated');
+  if (hasRated) {
+    showRatingSubmitted(JSON.parse(hasRated).stars);
+  } else {
+    document.getElementById('rating-form-wrap').style.display = '';
+    document.getElementById('rating-submitted-wrap').style.display = 'none';
+    document.getElementById('rating-footer').style.display = 'flex';
+  }
+  loadRatings();
+}
+
+function closeRatingModal() {
+  document.getElementById('rating-modal').style.display = 'none';
+}
+
+function setRatingStar(v) {
+  ratingValue = v;
+  document.querySelectorAll('#star-input span').forEach((s,i) => {
+    s.classList.toggle('active', i < v);
+  });
+  document.getElementById('rating-submit-btn').disabled = false;
+}
+
+async function loadRatings() {
+  try {
+    const res = await fetch(BACKEND_RATINGS + '/ratings');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    ratingsCache = data.ratings || [];
+    renderRatingList();
+    updatePill(data.average, data.count);
+  } catch {
+    document.getElementById('rating-list').innerHTML = '<div style="font-size:0.8rem;color:var(--white-dim);text-align:center;padding:0.75rem">Reviews unavailable offline</div>';
+  }
+}
+
+function renderRatingList() {
+  const el = document.getElementById('rating-list');
+  if (!ratingsCache.length) { el.innerHTML = '<div style="font-size:0.8rem;color:var(--white-dim);text-align:center;padding:0.75rem">No reviews yet — be the first!</div>'; return; }
+  el.innerHTML = [...ratingsCache].reverse().slice(0, 20).map(r => `
+    <div class="rating-item">
+      <div class="rating-item-header">
+        <span class="rating-item-name">${r.name || 'Anonymous'}</span>
+        <span class="rating-item-date">${r.date || ''}</span>
+      </div>
+      <div class="rating-item-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+      ${r.comment ? `<div class="rating-item-comment">${r.comment}</div>` : ''}
+    </div>`).join('');
+}
+
+function updatePill(avg, count) {
+  if (!avg || !count) return;
+  const score = avg.toFixed(1);
+  const filled = Math.round(avg);
+  document.getElementById('pill-score').textContent = score;
+  document.getElementById('pill-count').textContent = `(${count})`;
+  document.querySelector('.rate-pill-stars').textContent = '★'.repeat(filled) + '☆'.repeat(5 - filled);
+}
+
+async function submitRating() {
+  if (!ratingValue) return;
+  const btn = document.getElementById('rating-submit-btn');
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+  const payload = {
+    stars: ratingValue,
+    name: document.getElementById('rating-name').value.trim().slice(0, 40) || 'Anonymous',
+    comment: document.getElementById('rating-comment').value.trim().slice(0, 200),
+    date: new Date().toLocaleDateString('en-GB', {month:'short', year:'numeric'})
+  };
+  try {
+    const res = await fetch(BACKEND_RATINGS + '/rate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    localStorage.setItem('ledja_rated', JSON.stringify({stars: ratingValue}));
+    ratingsCache = data.ratings || [];
+    updatePill(data.average, data.count);
+    renderRatingList();
+    showRatingSubmitted(ratingValue);
+  } catch {
+    btn.textContent = 'Submit rating'; btn.disabled = false;
+    alert('Could not submit — please check your connection and try again.');
+  }
+}
+
+function showRatingSubmitted(stars) {
+  document.getElementById('rating-form-wrap').style.display = 'none';
+  document.getElementById('rating-submitted-wrap').style.display = '';
+  document.getElementById('rating-submitted-stars').textContent = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+  document.getElementById('rating-footer').innerHTML = '<button class="btn btn-secondary" onclick="closeRatingModal()">Close</button>';
+}
+
+// Load pill score on page load (silent)
+(async function initRatings() {
+  try {
+    const res = await fetch(BACKEND_RATINGS + '/ratings');
+    if (!res.ok) return;
+    const data = await res.json();
+    updatePill(data.average, data.count);
+  } catch { /* offline — pill shows static defaults */ }
+})();
+
+// Initialise UI on load
+(function init(){
+  updateCalcUI('ke');
+  updateAbout('ke');
+  setSupportCountry('ke', document.querySelector('#tab-support .country-tab-btn'));
+})();
 </script>
 </body>
 </html>
