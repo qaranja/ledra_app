@@ -1251,7 +1251,10 @@ function computeForCountry(data, code) {
   const basic = +data.basic||0, allowances = +data.allowances||0, bonus = +data.bonus||0;
   const overtime = +data.overtime||0;
   const helb = +data.helb||0, advance = +data.advance||0, loan = +data.loan||0;
-  const gross = basic + allowances + overtime + bonus;
+  const car = +data.car||0, meals = +data.meals||0, nonCash = +data.nonCash||0;
+  const housingBenefit = (data.housingType && data.housingType.toLowerCase()!=='benefit not given' && data.housingType!=='') ? (+data.housingBenefit||0) : 0;
+  const otherBen = +data.other||0;
+  const gross = basic + allowances + overtime + bonus + car + meals + nonCash + housingBenefit + otherBen;
 
   let prePayeDeductions = 0, nssf_ee = 0, nssf_er = 0, shif = 0, ahl_ee = 0, ahl_er = 0;
   let pension_ee = 0, pension_er = 0, maternity_ee = 0, maternity_er = 0, occ_er = 0;
@@ -1498,7 +1501,7 @@ function parseFile(file){const errEl=document.getElementById('import-errors');er
   }
   processRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''}));}catch(err){showErr('Could not read file: '+err.message);}};r.readAsArrayBuffer(file);}
 function nh(h){return String(h).trim().toLowerCase().replace(/[\s_\-]+/g,'');}
-const AL={empno:['empno','employeenumber','empid','employeeid','staffid'],surname:['surname','lastname'],othernames:['othernames','othername','givennames','name'],krapin:['krapin','pin','kra'],idno:['idno','id','nationalid'],nssfno:['nssfno','nssf'],shifno:['shifno','shif','sha'],phone:['phone','phonenumber','mobile','tel','telephone'],companyname:['companyname','company','employer','employername'],companypin:['companypin','employerpin','companytin','employertin'],basic:['basic','basicsalary','basepay','totalcashpay'],allowances:['allowances','allowance'],overtime:['overtime','ot'],bonus:['bonus','commission'],disability:['disability','pwd','personwithdisability'],certno:['certno','certificate_no','certificateno','cerificate_no','exemption_cert','exemptioncert'],meals:['meals','mealallowance'],noncash:['noncash','noncashbenefit'],housingtype:['housingtype','housing_type','housingbenefittype'],housingbenefit:['housingbenefit','housing_benefit','housingvalue','housingamount'],other:['other','otherbenefit'],helb:['helb'],advance:['advance','salaryadvance'],loan:['loan','loanrepayment'],nssftype:['nssftype'],month:['month','period']};
+const AL={empno:['empno','employeenumber','empid','employeeid','staffid'],surname:['surname','lastname'],othernames:['othernames','othername','givennames','name'],krapin:['krapin','pin','kra'],idno:['idno','id','nationalid'],nssfno:['nssfno','nssf'],shifno:['shifno','shif','sha'],phone:['phone','phonenumber','mobile','tel','telephone'],companyname:['companyname','company','employer','employername'],companypin:['companypin','employerpin','companytin','employertin'],basic:['basic','basicsalary','basepay','totalcashpay'],allowances:['allowances','allowance'],overtime:['overtime','ot'],bonus:['bonus','commission'],disability:['disability','pwd','personwithdisability'],certno:['certno','certificate_no','certificateno','cerificate_no','exemption_cert','exemptioncert'],car:['car','carallowance','carbenefit','motor'],meals:['meals','mealallowance'],noncash:['noncash','noncashbenefit'],housingtype:['housingtype','housing_type','housingbenefittype'],housingbenefit:['housingbenefit','housing_benefit','housingvalue','housingamount'],other:['other','otherbenefit'],helb:['helb'],advance:['advance','salaryadvance'],loan:['loan','loanrepayment'],nssftype:['nssftype'],month:['month','period']};
 function parseNSSFType(v){const s=String(v||'').trim().toLowerCase();if(s==='contracted'||s.includes('tier i only')||s.includes('tier i o'))return 'contracted';if(s==='old'||s.includes('flat'))return 'old';return 'full';}
 function processRows(rows){
   if(!rows||rows.length<2){showErr('File has no data rows.');return;}
@@ -1658,15 +1661,18 @@ function renderSummary(){
   `;}
 
 function exportKRApaye(){if(!employees.length){alert('No employees loaded.');return;}const rows=employees.map(e=>{
-  const car=+e.car||0;
-  const meals=+e.meals||0;
-  const nonCash=+e.nonCash||0;
+  const car=+e.car||0;                          // col H
+  const meals=+e.meals||0;                       // col I
+  const nonCash=+e.nonCash||0;                   // col J
+  const hasHousing=e.housingType&&e.housingType.toLowerCase()!=='benefit not given'&&e.housingType!=='';
+  const housingType=hasHousing?e.housingType:'Benefit Not Given'; // col K — default to Benefit Not Given
+  const housingVal=hasHousing?n2(+e.housingBenefit||0):''; // col L — blank if not given
+  const otherBen=+e.other||0;                   // col M
   const pensionCol=(e.nssfType==='contracted'?n2(e.pension_ee||0):0);
-  const housingType=e.housingType&&e.housingType!=='Benefit Not Given'?e.housingType:'Benefit Not given';
-  const housingVal=housingType!=='Benefit Not given'?n2(+e.housingBenefit||0):'';
   const pwdFlag = e.disability ? 'YES' : 'NO';
   const pwdCert = e.disability && e.certNo ? e.certNo : '';
-  return [e.krapin||'',`${esc(e.othernames||'')} ${e.surname}`.trim(),'Resident','Primary Employee',pwdFlag,pwdCert,n2(e.gross),n2(car),n2(meals),n2(nonCash),housingType,housingVal,0,'',n2(e.shif),n2(e.nssf_ee),pensionCol,0,0,n2(e.ahl_ee),'',2400,0,'',n2(e.paye)];
+  const cashPay = n2((+e.basic||0) + (+e.allowances||0) + (+e.overtime||0) + (+e.bonus||0));
+  return [e.krapin||'',`${esc(e.othernames||'')} ${e.surname}`.trim(),'Resident','Primary Employee',pwdFlag,pwdCert,cashPay,n2(car),n2(meals),n2(nonCash),housingType,housingVal,n2(otherBen),'',n2(e.shif),n2(e.nssf_ee),pensionCol,0,0,n2(e.ahl_ee),'',2400,0,'',n2(e.paye)];
 });const csv=rows.map(r=>r.map(v=>typeof v==='string'&&v.includes(',')? `"${v}"` : v).join(',')).join('\r\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=exportFilename('KRA-PAYE-iTax', employees[0]?.month)+'.csv';a.click();}
 
 function col(n){return XLSX.utils.encode_col(n);}
