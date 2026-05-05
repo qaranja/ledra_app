@@ -188,6 +188,90 @@ select option{background:var(--navy-mid)}
 .country-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
 @media print{.splash{display:none!important}}
 @media print{.app-header,.sidebar,.btn-row,.notice{display:none!important}.app-layout{display:block}.main{max-height:none}}
+
+/* ── RESPONSIVE ────────────────────────────────────────────────────────────── */
+
+/* Tablet: 640–1024px — collapsible sidebar */
+@media(max-width:1024px){
+  .app-layout{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;top:60px;left:0;bottom:0;z-index:200;
+    width:220px;transform:translateX(-100%);
+    transition:transform 0.25s cubic-bezier(.4,0,.2,1);
+    box-shadow:4px 0 24px rgba(0,0,0,0.4);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{
+    display:none;position:fixed;inset:0;top:60px;
+    background:rgba(0,0,0,0.5);z-index:199;backdrop-filter:blur(2px);
+  }
+  .sidebar-overlay.open{display:block}
+  .hamburger{display:flex!important}
+  .main{height:calc(100vh - 60px)}
+}
+
+/* Mobile: <640px — bottom tab bar */
+@media(max-width:639px){
+  .app-header{padding:0 1rem;height:52px}
+  .app-logo{font-size:1rem!important}
+  .rate-pill .rate-pill-label{display:none}
+  .rate-pill{padding:5px 8px;gap:5px}
+  .app-layout{grid-template-columns:1fr}
+  .sidebar{display:none!important}
+  .sidebar-overlay{display:none!important}
+  .hamburger{display:none!important}
+  .main{height:calc(100vh - 52px - 56px);padding-bottom:0}
+  /* Bottom nav bar */
+  .bottom-nav{
+    display:flex!important;position:fixed;bottom:0;left:0;right:0;
+    height:56px;background:var(--navy-mid);border-top:1px solid var(--border);
+    z-index:200;overflow-x:auto;scrollbar-width:none;
+  }
+  .bottom-nav::-webkit-scrollbar{display:none}
+  .bottom-nav-item{
+    flex:1;min-width:52px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2px;
+    padding:6px 4px;cursor:pointer;border:none;background:none;
+    color:var(--white-dim);font-size:0.52rem;font-family:var(--font-mono);
+    letter-spacing:0.04em;text-transform:uppercase;transition:color 0.15s;
+    white-space:nowrap;
+  }
+  .bottom-nav-item svg{width:18px;height:18px;opacity:0.6;transition:opacity 0.15s}
+  .bottom-nav-item.active{color:var(--amber)}
+  .bottom-nav-item.active svg{opacity:1}
+  /* Layout adjustments */
+  .section{padding:1rem}
+  .page-title h1{font-size:1.4rem}
+  .metrics-row{grid-template-columns:repeat(2,1fr)!important;gap:8px}
+  .form-grid.cols-2{grid-template-columns:1fr!important}
+  .form-grid.cols-3{grid-template-columns:1fr!important}
+  .card{padding:1rem}
+  .btn-row{gap:8px}
+  .btn-row .btn{font-size:0.78rem;padding:7px 12px}
+  .payslip-header{grid-template-columns:1fr!important}
+  .country-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .country-tabs::-webkit-scrollbar{display:none}
+  .country-tab-btn{white-space:nowrap;flex-shrink:0}
+  table{font-size:0.78rem}
+  .modal-body{padding:1rem}
+  .modal-footer{flex-direction:column}
+  .modal-footer .btn{width:100%}
+  .emp-item{gap:10px}
+  .ps-table td,.ps-table th{padding:6px 8px;font-size:0.75rem}
+  .payslip-net{flex-direction:column;gap:8px;text-align:center}
+}
+
+/* Hamburger button — hidden on desktop/mobile, shown on tablet */
+.hamburger{
+  display:none;align-items:center;justify-content:center;
+  width:36px;height:36px;border:1px solid var(--border);border-radius:var(--radius);
+  background:none;cursor:pointer;color:var(--white-dim);flex-shrink:0;
+  transition:color 0.15s,border-color 0.15s;
+}
+.hamburger:hover{color:var(--white);border-color:var(--white-dim)}
+
+/* Bottom nav — hidden until mobile breakpoint */
+.bottom-nav{display:none}
 </style>
 </head>
 <body>
@@ -202,6 +286,11 @@ select option{background:var(--navy-mid)}
   <div style="display:flex;align-items:center">
     <span class="logo-mark">Ledja <span>Payroll</span></span>
   </div>
+  <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
   <button class="rate-pill" onclick="openRatingModal()" id="rate-pill">
     <span class="rate-pill-stars">★★★★★</span>
     <span class="rate-pill-score" id="pill-score">4.8</span>
@@ -209,9 +298,10 @@ select option{background:var(--navy-mid)}
     <span class="rate-pill-label">Rate us</span>
   </button>
 </header>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="app-layout">
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar">
   <div style="flex:1;overflow-y:auto">
   <div class="sidebar-section">
     <div class="sidebar-label">Calculate</div>
@@ -2044,7 +2134,38 @@ body{font-family:Arial,sans-serif;font-size:12px;color:#1C1917;background:#fff}
 .ps-net span:last-child{font-size:18px;font-weight:700;font-family:monospace;color:#1C1917}
 .ps-footer{font-size:8px;color:#9CA3AF;text-align:center;padding-top:8px;border-top:1px solid #F3F4F6;letter-spacing:0.05em}
 @media print{.payslip-page{padding:20px;max-width:100%}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style></head><body>${slips}<script>window.onload=()=>window.print();<\/script></body></html>`;
+</style></head><body>${slips}<script>window.onload=()=>window.print();<\/script>
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bottom-nav-item active" id="bnav-calculator" onclick="switchTab('calculator')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+    Calc
+  </button>
+  <button class="bottom-nav-item" id="bnav-import" onclick="switchTab('import')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Import
+  </button>
+  <button class="bottom-nav-item" id="bnav-employees" onclick="switchTab('employees')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Staff
+  </button>
+  <button class="bottom-nav-item" id="bnav-payslip" onclick="switchTab('payslip')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Payslip
+  </button>
+  <button class="bottom-nav-item" id="bnav-summary" onclick="switchTab('summary')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Summary
+  </button>
+  <button class="bottom-nav-item" id="bnav-export" onclick="switchTab('export')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export
+  </button>
+  <button class="bottom-nav-item" id="bnav-support" onclick="switchTab('support')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Help
+  </button>
+</nav>
+</body></html>`;
 
   const w=window.open('','_blank');
   if(w){w.document.write(html);w.document.close();}
@@ -2262,7 +2383,30 @@ function renderResources(code) {
 
 // ── END RESOURCES ─────────────────────────────────────────────────────────────
 
-function switchTab(name){const names=['calculator','import','employees','payslip','summary','export','resources','about','support'];document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',names[i]===name));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(name==='resources')renderResources(resourceCountry);}
+
+// ── MOBILE / TABLET NAV ───────────────────────────────────────────────────────
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  const isOpen = sb.classList.contains('open');
+  sb.classList.toggle('open', !isOpen);
+  ov.classList.toggle('open', !isOpen);
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// Sync bottom nav active state
+function syncBottomNav(name){
+  document.querySelectorAll('.bottom-nav-item').forEach(b=>{
+    b.classList.remove('active');
+  });
+  const active = document.getElementById('bnav-'+name);
+  if(active) active.classList.add('active');
+}
+// ── END MOBILE NAV ────────────────────────────────────────────────────────────
+function switchTab(name){const names=['calculator','import','employees','payslip','summary','export','resources','about','support'];document.querySelectorAll('.nav-item').forEach((b,i)=>b.classList.toggle('active',names[i]===name));document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(name==='resources')renderResources(resourceCountry);syncBottomNav(name);closeSidebar();}
 
 // ── RATINGS ──────────────────────────────────────────────────────────────────
 const BACKEND_RATINGS = 'https://ledja-backend.onrender.com';
@@ -2403,5 +2547,36 @@ function showRatingSubmitted(stars) {
   setSupportCountry('ke', document.querySelector('#tab-support .country-tab-btn'));
 })();
 </script>
+
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bottom-nav-item active" id="bnav-calculator" onclick="switchTab('calculator')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+    Calc
+  </button>
+  <button class="bottom-nav-item" id="bnav-import" onclick="switchTab('import')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Import
+  </button>
+  <button class="bottom-nav-item" id="bnav-employees" onclick="switchTab('employees')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Staff
+  </button>
+  <button class="bottom-nav-item" id="bnav-payslip" onclick="switchTab('payslip')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Payslip
+  </button>
+  <button class="bottom-nav-item" id="bnav-summary" onclick="switchTab('summary')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Summary
+  </button>
+  <button class="bottom-nav-item" id="bnav-export" onclick="switchTab('export')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export
+  </button>
+  <button class="bottom-nav-item" id="bnav-support" onclick="switchTab('support')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Help
+  </button>
+</nav>
 </body>
 </html>
