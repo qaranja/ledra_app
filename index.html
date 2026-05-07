@@ -437,7 +437,7 @@ select option{background:var(--navy-mid)}
     <div class="card-header"><div class="card-dot"></div><div class="card-title">Pay components</div><div style="margin-left:auto;display:flex;align-items:center;gap:7px"><label for="c-pwd" style="font-size:0.75rem;color:var(--white-dim);cursor:pointer;user-select:none">Persons With Disability (PWD)</label><input type="checkbox" id="c-pwd" onchange="togglePwd(this.checked)" style="width:15px;height:15px;accent-color:var(--amber);cursor:pointer"/><span id="pwd-checkmark" style="display:none;font-size:0.9rem;color:var(--amber)">✓</span></div></div>
     <div class="form-grid cols-2">
       <div class="field"><label id="lbl-basic">Basic pay</label><input id="c-basic" type="number" placeholder="50,000" oninput="calcPay()"/></div>
-      <div class="field"><label id="lbl-allowances">Taxable benefits</label><input id="c-allowances" type="number" placeholder="0" oninput="calcPay()"/></div>
+      <div class="field"><label id="lbl-allowances">Non-cash benefits</label><input id="c-allowances" type="number" placeholder="0" oninput="calcPay()"/></div>
     </div>
     <div class="form-grid cols-2">
       <div class="field"><label id="lbl-overtime">Overtime</label><input id="c-overtime" type="number" placeholder="0" oninput="calcPay()"/></div>
@@ -463,7 +463,8 @@ select option{background:var(--navy-mid)}
 
   <div id="results" style="display:none">
     <div class="metrics-row">
-      <div class="metric"><div class="metric-label">Gross pay</div><div class="metric-value" id="r-gross">—</div></div>
+      <div class="metric"><div class="metric-label">Cash gross</div><div class="metric-value" id="r-gross">—</div></div>
+      <div class="metric" id="metric-noncash-card" style="display:none"><div class="metric-label">Non-cash benefits</div><div class="metric-value" id="r-noncash">—</div></div>
       <div class="metric red"><div class="metric-label">PAYE</div><div class="metric-value" id="r-paye">—</div></div>
       <div class="metric red" id="metric-shif-card"><div class="metric-label" id="lbl-shif">SHIF</div><div class="metric-value" id="r-shif">—</div></div>
       <div class="metric red" id="metric-nssf-card"><div class="metric-label" id="lbl-nssf">NSSF</div><div class="metric-value" id="r-nssf">—</div></div>
@@ -475,7 +476,9 @@ select option{background:var(--navy-mid)}
     <div class="card">
       <div class="card-header"><div class="card-dot"></div><div class="card-title">PAYE computation</div></div>
       <table class="data-table">
-        <tr><td class="muted">Gross pay</td><td class="mono" id="pt-gross">—</td></tr>
+        <tr><td class="muted">Cash gross</td><td class="mono" id="pt-gross">—</td></tr>
+        <tr id="pt-row-noncash" style="display:none"><td class="muted">Add: Non-cash benefits</td><td class="mono" id="pt-noncash">—</td></tr>
+        <tr id="pt-row-taxgross" style="display:none"><td class="muted">Taxable gross</td><td class="mono" id="pt-taxgross">—</td></tr>
         <tr id="pt-row-shif"><td class="muted" id="pt-lbl-shif">Less: SHIF (pre-PAYE)</td><td class="mono" id="pt-shif">—</td></tr>
         <tr id="pt-row-ahl"><td class="muted" id="pt-lbl-ahl">Less: AHL employee (pre-PAYE)</td><td class="mono" id="pt-ahl">—</td></tr>
         <tr id="pt-row-nssf"><td class="muted" id="pt-lbl-nssf">Less: NSSF employee (pre-PAYE)</td><td class="mono" id="pt-nssf">—</td></tr>
@@ -543,7 +546,7 @@ select option{background:var(--navy-mid)}
   <div id="payslip-empty" class="card"><div class="empty-state"><div class="empty-state-icon">&#128196;</div><p>No employee selected. Go to Employees and click a name.</p></div></div>
   <div id="payslip-view"></div>
   <div class="btn-row" id="payslip-btns" style="display:none">
-    <button class="btn btn-primary" onclick="window.print()">Print / save PDF</button>
+    <button class="btn btn-primary" onclick="printSinglePayslip()">Print / save PDF</button>
   </div>
 </div>
 
@@ -674,7 +677,7 @@ select option{background:var(--navy-mid)}
     <button class="export-card" onclick="gatedExport(exportNSSF)">
       <div class="export-card-icon">&#128203;</div>
       <div class="export-card-title">NSSF Schedule — Excel</div>
-      <div class="export-card-sub">Tier I &middot; eCitizen &middot; due 15th</div>
+      <div class="export-card-sub">Tier I &amp; II &middot; eCitizen &middot; due 15th</div>
     </button>
     <button class="export-card" onclick="gatedExport(exportSHIF)">
       <div class="export-card-icon">&#127973;</div>
@@ -1031,7 +1034,7 @@ function updateCalcUI(code){
   // Bonus label (no overtime prefix since overtime has its own field)
   document.getElementById('lbl-bonus').textContent=`Bonus / Commission (${cur})`;
   document.getElementById('lbl-basic').textContent=`Basic pay (${cur})`;
-  document.getElementById('lbl-allowances').textContent=`Taxable benefits (${cur})`;
+  document.getElementById('lbl-allowances').textContent=`Non-cash benefits (${cur})`;
   document.getElementById('lbl-overtime').textContent=`Overtime (${cur})`;
   if(ui.helb)document.getElementById('lbl-helb').textContent=`HELB deduction (${cur})`;
   document.getElementById('lbl-advance').textContent=`Salary advance recovery (${cur})`;
@@ -1344,7 +1347,13 @@ function computeForCountry(data, code) {
   const car = +data.car||0, meals = +data.meals||0, nonCash = +data.nonCash||0;
   const housingBenefit = (data.housingType && data.housingType.toLowerCase()!=='benefit not given' && data.housingType!=='') ? (+data.housingBenefit||0) : 0;
   const otherBen = +data.other||0;
-  const gross = basic + allowances + overtime + bonus + car + meals + nonCash + housingBenefit + otherBen;
+  // cashGross: base for SHIF, NSSF, AHL — cash pay only (basic, overtime, bonus, meals, other benefits)
+  // Car, non-cash, housing benefit, and allowances are excluded — they go into PAYE base only
+  const cashGross = basic + overtime + bonus + meals + otherBen;
+  // nonCashBenefits: car + non-cash + housing + allowances — added to PAYE base only
+  const nonCashBenefits = car + nonCash + housingBenefit + allowances;
+  // gross: total remuneration (cash + non-cash) — shown on payslip and summary
+  const gross = cashGross + nonCashBenefits;
 
   let prePayeDeductions = 0, nssf_ee = 0, nssf_er = 0, shif = 0, ahl_ee = 0, ahl_er = 0;
   let pension_ee = 0, pension_er = 0, maternity_ee = 0, maternity_er = 0, occ_er = 0;
@@ -1356,11 +1365,11 @@ function computeForCountry(data, code) {
     const nssfType = data.nssfType || 'full';
 
     // Health: SHIF (2.75%) or NHIF flat depending on period
-    shif = pr.shif ? gross * pr.shif : (pr.nhif_flat ? nhifFlat(gross) : 0);
-    ahl_ee = gross * pr.ahl_ee; ahl_er = gross * pr.ahl_er;
+    shif = pr.shif ? cashGross * pr.shif : (pr.nhif_flat ? nhifFlat(cashGross) : 0);
+    ahl_ee = cashGross * pr.ahl_ee; ahl_er = cashGross * pr.ahl_er;
 
-    const t1 = Math.min(gross, pr.nssf_t1) * pr.nssf_rate;
-    const t2 = Math.min(Math.max(gross - pr.nssf_t1, 0), pr.nssf_t2 - pr.nssf_t1) * pr.nssf_rate;
+    const t1 = Math.min(cashGross, pr.nssf_t1) * pr.nssf_rate;
+    const t2 = Math.min(Math.max(cashGross - pr.nssf_t1, 0), pr.nssf_t2 - pr.nssf_t1) * pr.nssf_rate;
     if (nssfType === 'old') {
       nssf_ee = 200; nssf_er = 200;
     } else if (nssfType === 'contracted') {
@@ -1431,10 +1440,10 @@ function computeForCountry(data, code) {
   }
 
   const totalEeDeductions = paye + nssf_ee + shif + ahl_ee + helb + pension_ee + maternity_ee + advance + loan;
-  const net = gross - totalEeDeductions;
+  const net = cashGross - totalEeDeductions;
 
   return {
-    ...data, gross, paye, grossTax, payeRows, taxable, prePayeDeductions,
+    ...data, gross, cashGross, nonCashBenefits, paye, grossTax, payeRows, taxable, prePayeDeductions,
     shif, ahl_ee, ahl_er, nssf_ee, nssf_er,
     pension_ee, pension_er, maternity_ee, maternity_er, occ_er, sdl, wcf, nita_er,
     helb, advance, loan, overtime, net, totalDeductions:totalEeDeductions,
@@ -1517,7 +1526,10 @@ function calcPay(){
     if(!val){card.style.display='none';}
     else{card.style.display='';el.textContent=fmt(val,cur);}
   };
-  document.getElementById('r-gross').textContent=fmt(e.gross,cur);
+  document.getElementById('r-gross').textContent=fmt(e.cashGross||e.gross,cur);
+  const nonCashCard=document.getElementById('metric-noncash-card');
+  const nonCash=e.nonCashBenefits||0;
+  if(nonCashCard){nonCashCard.style.display=nonCash>0?'':'none';if(nonCash>0)document.getElementById('r-noncash').textContent=fmt(nonCash,cur);}
   document.getElementById('r-paye').textContent=fmt(e.paye,cur);
   // SHIF card: Kenya=SHIF, Rwanda=RSSB pension, UG/TZ=hidden
   setMetric('r-shif','metric-shif-card', activeCountry==='ke'?e.shif : activeCountry==='rw'?e.pension_ee : 0);
@@ -1537,7 +1549,12 @@ function calcPay(){
   const loanCard=document.getElementById('metric-loan-card');
   if(loanCard){if(!loanTotal)loanCard.style.display='none';else{loanCard.style.display='';document.getElementById('r-loan').textContent=fmt(loanTotal,cur);}}
   document.getElementById('r-net').textContent=fmt(e.net,cur);
-  document.getElementById('pt-gross').textContent=fmt(e.gross,cur);
+  document.getElementById('pt-gross').textContent=fmt(e.cashGross||e.gross,cur);
+  const ptNonCash=e.nonCashBenefits||0;
+  const ptNonCashRow=document.getElementById('pt-row-noncash');
+  const ptTaxGrossRow=document.getElementById('pt-row-taxgross');
+  if(ptNonCashRow){ptNonCashRow.style.display=ptNonCash>0?'':'none';document.getElementById('pt-noncash').textContent=fmt(ptNonCash,cur);}
+  if(ptTaxGrossRow){ptTaxGrossRow.style.display=ptNonCash>0?'':'none';document.getElementById('pt-taxgross').textContent=fmt((e.cashGross||e.gross)+ptNonCash,cur);}
   // pt-shif row: Kenya=SHIF, Rwanda row is hidden (null paye_lbl_shif), UG/TZ hidden
   document.getElementById('pt-shif').innerHTML=e.shif?fmtN(e.shif,cur):'&mdash;';
   // pt-ahl row: Kenya=AHL, Rwanda=Maternity (pre-PAYE)
@@ -1564,6 +1581,7 @@ function addEmployee(){
   if(!currentCalc){alert('Run a calculation first.');return;}
   const idx=employees.findIndex(x=>(x.krapin&&x.krapin===currentCalc.krapin)||(x.surname===currentCalc.surname&&x.othernames===currentCalc.othernames));
   if(idx>=0)employees[idx]={...currentCalc};else employees.push({...currentCalc});
+  const pensionExpCard=document.getElementById('pension-export-card');if(pensionExpCard)pensionExpCard.style.display=employees.some(e=>e.nssfType==='contracted'&&e.pension_ee>0)?'':'none';
   renderEmployees();renderSummary();checkPaywallReset();switchTab('employees');
 }
 
@@ -1677,7 +1695,8 @@ function processRows(rows){
     +'</tbody></table>';
   document.getElementById('import-preview').style.display='block';
 }
-function confirmImport(){let a=0,u=0;let importedCo='',importedCoPin='';pendingImport.forEach(d=>{const e=computeForCountry(d,activeCountry);if(!importedCo&&d.importedCompany)importedCo=d.importedCompany;if(!importedCoPin&&d.importedCompanyPin)importedCoPin=d.importedCompanyPin;const idx=employees.findIndex(x=>(x.krapin&&x.krapin===e.krapin)||(x.surname===e.surname&&x.othernames===e.othernames));if(idx>=0){employees[idx]=e;u++;}else{employees.push(e);a++;}});pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';if(importedCo&&!document.getElementById('c-company').value){document.getElementById('c-company').value=importedCo;companyName=importedCo;}if(importedCoPin&&!document.getElementById('c-company-pin').value){document.getElementById('c-company-pin').value=importedCoPin;companyPin=importedCoPin;}renderEmployees();renderSummary();checkPaywallReset();const fbtCard=document.getElementById('fbt-export-card');if(fbtCard)fbtCard.style.display=pendingFBT.length?'':'none';switchTab('employees');setTimeout(()=>alert(`Imported: ${a} new, ${u} updated.`),100);}
+function confirmImport(){let a=0,u=0;let importedCo='',importedCoPin='';pendingImport.forEach(d=>{const e=computeForCountry(d,activeCountry);if(!importedCo&&d.importedCompany)importedCo=d.importedCompany;if(!importedCoPin&&d.importedCompanyPin)importedCoPin=d.importedCompanyPin;const idx=employees.findIndex(x=>(x.krapin&&x.krapin===e.krapin)||(x.surname===e.surname&&x.othernames===e.othernames));if(idx>=0){employees[idx]=e;u++;}else{employees.push(e);a++;}});pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';if(importedCo&&!document.getElementById('c-company').value){document.getElementById('c-company').value=importedCo;companyName=importedCo;}if(importedCoPin&&!document.getElementById('c-company-pin').value){document.getElementById('c-company-pin').value=importedCoPin;companyPin=importedCoPin;}renderEmployees();renderSummary();checkPaywallReset();const fbtCard=document.getElementById('fbt-export-card');if(fbtCard)fbtCard.style.display=pendingFBT.length?'':'none';
+  const pensionExpCard=document.getElementById('pension-export-card');if(pensionExpCard)pensionExpCard.style.display=employees.some(e=>e.nssfType==='contracted'&&e.pension_ee>0)?'':'none';switchTab('employees');setTimeout(()=>alert(`Imported: ${a} new, ${u} updated.`),100);}
 function cancelImport(){pendingImport=[];document.getElementById('import-preview').style.display='none';document.getElementById('file-input').value='';}
 function showErr(m){const el=document.getElementById('import-errors');el.style.display='block';el.textContent=m;}
 
@@ -1690,11 +1709,122 @@ function renderEmployees(){
 }
 
 function showPayslip(i){renderPayslip(employees[i]);switchTab('payslip');}
+
+function printSinglePayslip(){
+  const e = currentCalc;
+  if(!e){alert('No payslip loaded.');return;}
+  const fmtP = n => Number(n||0).toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const month = e.month||'';
+  const pensionRow = e.nssfType==='contracted'&&e.pension_ee
+    ? `<tr><td>NSSF Tier II ee (→ pension fund)</td><td class="ded">– ${fmtP(e.pension_ee)}</td></tr>` : '';
+  const pensionErRow = e.pension_er
+    ? `<tr><td>${e.countryCode==='rw'?'RSSB Pension employer (6%)':'NSSF Tier II employer (pension fund)'}</td><td>${fmtP(e.pension_er)}</td></tr>` : '';
+
+  const slip = `<div class="payslip-page">
+    <div class="ps-header">
+      <div>
+        <div class="ps-company">${esc(getCompany())}</div>
+        ${e.companyPin?`<div class="ps-companypin">PIN: ${esc(e.companyPin)}</div>`:''}
+      </div>
+      <div class="ps-month">${esc(month)}</div>
+    </div>
+    <div class="ps-name">${esc(e.surname||'')}${e.othernames?', '+esc(e.othernames):''}</div>
+    <div class="ps-meta">
+      ${e.empid?`<span>Emp ID: ${esc(e.empid)}</span>`:''}
+      ${e.krapin?`<span>KRA PIN: ${esc(e.krapin)}</span>`:''}
+      ${e.idno?`<span>ID: ${esc(e.idno)}</span>`:''}
+      ${e.nssfno?`<span>NSSF: ${esc(e.nssfno)}</span>`:''}
+      ${e.shifno?`<span>SHIF: ${esc(e.shifno)}</span>`:''}
+    </div>
+    <table class="ps-table">
+      <thead><tr><th colspan="2">Earnings</th></tr></thead>
+      <tbody>
+        <tr><td>Basic pay</td><td>${fmtP(e.basic)}</td></tr>
+        ${e.overtime?`<tr><td>Overtime</td><td>${fmtP(e.overtime)}</td></tr>`:''}
+        ${e.allowances?`<tr><td>Taxable benefits</td><td>${fmtP(e.allowances)}</td></tr>`:''}
+        ${e.bonus?`<tr><td>Bonus / commission</td><td>${fmtP(e.bonus)}</td></tr>`:''}
+        ${e.car?`<tr><td>Car benefit</td><td>${fmtP(e.car)}</td></tr>`:''}
+        ${e.meals?`<tr><td>Meals benefit</td><td>${fmtP(e.meals)}</td></tr>`:''}
+        ${e.nonCash?`<tr><td>Non-cash benefit</td><td>${fmtP(e.nonCash)}</td></tr>`:''}
+        ${e.housingBenefit?`<tr><td>Housing benefit</td><td>${fmtP(e.housingBenefit)}</td></tr>`:''}
+        <tr class="subtotal"><td>Gross pay</td><td>${fmtP(e.gross)}</td></tr>
+      </tbody>
+    </table>
+    <table class="ps-table">
+      <thead><tr><th colspan="2">Statutory deductions</th></tr></thead>
+      <tbody>
+        <tr><td>PAYE (income tax)</td><td class="ded">– ${fmtP(e.paye)}</td></tr>
+        <tr><td>${e.nhifFlat?'NHIF (flat)':'SHIF (2.75%)'}</td><td class="ded">– ${fmtP(e.shif)}</td></tr>
+        ${e.nssfType==='contracted'
+          ?`<tr><td>NSSF Tier I ee (→ NSSF)</td><td class="ded">– ${fmtP(e.nssf_ee)}</td></tr>${pensionRow}`
+          :`<tr><td>NSSF employee share</td><td class="ded">– ${fmtP(e.nssf_ee)}</td></tr>`}
+        ${e.ahl_ee?`<tr><td>Affordable Housing Levy (1.5%)</td><td class="ded">– ${fmtP(e.ahl_ee)}</td></tr>`:''}
+        <tr class="subtotal"><td>Total statutory</td><td class="ded">– ${fmtP(e.statutoryDeductions)}</td></tr>
+      </tbody>
+    </table>
+    ${(e.helb||e.advance||e.loan||e.otherDeductions)?`
+    <table class="ps-table">
+      <thead><tr><th colspan="2">Other deductions</th></tr></thead>
+      <tbody>
+        ${e.helb?`<tr><td>HELB repayment</td><td class="ded">– ${fmtP(e.helb)}</td></tr>`:''}
+        ${e.advance?`<tr><td>Salary advance recovery</td><td class="ded">– ${fmtP(e.advance)}</td></tr>`:''}
+        ${e.loan?`<tr><td>Staff loan repayment</td><td class="ded">– ${fmtP(e.loan)}</td></tr>`:''}
+        ${e.otherDeductions?`<tr><td>Other deductions</td><td class="ded">– ${fmtP(e.otherDeductions)}</td></tr>`:''}
+      </tbody>
+    </table>`:''}
+    <table class="ps-table">
+      <thead><tr><th colspan="2">Employer contributions</th></tr></thead>
+      <tbody>
+        ${e.nssfType==='contracted'
+          ?`<tr><td>NSSF Tier I employer (→ NSSF)</td><td>${fmtP(e.nssf_er)}</td></tr>${pensionErRow}`
+          :`<tr><td>NSSF employer share</td><td>${fmtP(e.nssf_er)}</td></tr>`}
+        ${e.ahl_er?`<tr><td>AHL employer share (1.5%)</td><td>${fmtP(e.ahl_er)}</td></tr>`:''}
+        ${e.nita_er?`<tr><td>NITA (KES 50 flat)</td><td>${fmtP(e.nita_er)}</td></tr>`:''}
+      </tbody>
+    </table>
+    <div class="ps-net"><span>Net pay</span><span>${fmtP(e.net)}</span></div>
+    <div class="ps-footer">Generated by Ledja Payroll &middot; ${new Date().toLocaleDateString('en-KE',{month:'long',year:'numeric'})}</div>
+  </div>`;
+
+  const htmlDoc = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/>
+<title>Payslip — ${esc(e.surname||'')} — ${month}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;font-size:12px;color:#1C1917;background:#fff}
+.payslip-page{padding:32px;max-width:640px;margin:0 auto}
+.ps-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid #E5E7EB}
+.ps-company{font-size:15px;font-weight:600;color:#1C1917}
+.ps-companypin{font-size:9px;color:#6B7280;font-family:monospace;margin-top:2px;letter-spacing:0.05em}
+.ps-month{font-size:10px;font-family:monospace;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px;padding:4px 10px;color:#374151}
+.ps-name{font-size:16px;font-weight:600;color:#1C1917;margin-bottom:5px}
+.ps-meta{font-size:10px;color:#6B7280;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:5px}
+.ps-meta span{background:#F9FAFB;border:1px solid #E5E7EB;border-radius:3px;padding:2px 7px;font-family:monospace}
+.ps-table{width:100%;border-collapse:collapse;margin-bottom:10px}
+.ps-table thead tr{background:#374151}
+.ps-table thead th{color:#F9FAFB;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;padding:6px 10px;text-align:left;font-weight:500}
+.ps-table thead th:last-child{text-align:right}
+.ps-table td{padding:5px 10px;border-bottom:1px solid #F3F4F6;font-size:11px;color:#374151}
+.ps-table td:last-child{text-align:right;font-family:monospace}
+.ps-table tr.subtotal td{font-weight:600;border-top:1px solid #E5E7EB;border-bottom:1px solid #E5E7EB;background:#F9FAFB;color:#1C1917}
+.ps-table td.ded{color:#991B1B}
+.ps-net{display:flex;justify-content:space-between;align-items:center;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:4px;padding:12px 14px;margin-bottom:14px}
+.ps-net span:first-child{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280}
+.ps-net span:last-child{font-size:18px;font-weight:700;font-family:monospace;color:#1C1917}
+.ps-footer{font-size:8px;color:#9CA3AF;text-align:center;padding-top:8px;border-top:1px solid #F3F4F6;letter-spacing:0.05em}
+@media print{.payslip-page{padding:20px;max-width:100%}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>${slip}<script>window.onload=()=>window.print();<\/script></body></html>`;
+
+  const w = window.open('','_blank');
+  if(w){w.document.write(htmlDoc);w.document.close();}
+  else alert('Pop-up blocked — please allow pop-ups for this page and try again.');
+}
+
 function viewPayslip(){if(!currentCalc)return;renderPayslip(currentCalc);switchTab('payslip');}
 function renderPayslip(e){
+  currentCalc = e;
   document.getElementById('payslip-empty').style.display='none';
   document.getElementById('payslip-btns').style.display='flex';
-  document.getElementById('payslip-view').innerHTML=`<div class="payslip-wrap"><div class="payslip-header"><div><div style="font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--white-dim);margin-bottom:4px">Payslip</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-bottom:4px">${esc(getCompany())}</div><div class="payslip-name">${e.surname},<br>${esc(e.othernames||'')}</div><div class="payslip-meta" style="margin-top:10px">${e.krapin?'KRA PIN: '+esc(e.krapin)+'<br>':''}${e.idno?'ID No: '+esc(e.idno)+'<br>':''}${e.empid?'Emp ID: '+esc(e.empid)+'<br>':''}${e.nssfno?'NSSF: '+esc(e.nssfno)+'<br>':''}${e.shifno?'SHIF: '+esc(e.shifno):''}</div></div><div class="payslip-month">${esc(e.month||'Month N/A')}</div></div><div class="payslip-body"><div class="payslip-section"><div class="payslip-section-label">Earnings</div><table class="data-table"><tr><td class="muted">Basic pay</td><td class="mono">${fmt(e.basic)}</td></tr>${e.allowances?`<tr><td class="muted">Allowances</td><td class="mono">${fmt(e.allowances)}</td></tr>`:''}${e.bonus?`<tr><td class="muted">Bonus / commission</td><td class="mono">${fmt(e.bonus)}</td></tr>`:''}<tr class="total-row"><td>Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">Statutory deductions</div><table class="data-table"><tr><td class="muted">PAYE (income tax)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.paye)}</td></tr><tr><td class="muted">SHIF (2.75%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.shif)}</td></tr>${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employee (→ NSSF)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf_ee)}</td></tr>${e.pension_ee?`<tr><td class="muted">NSSF Tier II employee (→ pension fund)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.pension_ee)}</td></tr>`:''}`:`<tr><td class="muted">NSSF employee share</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf_ee)}</td></tr>`}<tr><td class="muted">Affordable Housing Levy (1.5%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.ahl_ee)}</td></tr>${e.helb?`<tr><td class="muted">HELB repayment</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.helb)}</td></tr>`:''}<tr class="total-row"><td>Total statutory</td><td class="mono">&ndash; ${fmt(e.statutoryDeductions)}</td></tr></table></div>${(e.advance+e.loan)?`<div class="payslip-section"><div class="payslip-section-label">Loan &amp; advance recovery</div><table class="data-table">${e.advance?`<tr><td class="muted">Salary advance recovery</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.advance)}</td></tr>`:''}${e.loan?`<tr><td class="muted">Staff loan repayment</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.loan)}</td></tr>`:''}</table></div>`:''}<div class="payslip-section"><div class="payslip-section-label">Employer contributions</div><table class="data-table">${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employer (→ NSSF)</td><td class="mono">${fmt(e.nssf_er)}</td></tr>${e.pension_er?`<tr><td class="muted">NSSF Tier II employer (→ pension fund)</td><td class="mono">${fmt(e.pension_er)}</td></tr>`:''}`:`<tr><td class="muted">NSSF employer share</td><td class="mono">${fmt(e.nssf_er)}</td></tr>`}<tr><td class="muted">AHL employer share (1.5%)</td><td class="mono">${fmt(e.ahl_er)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">PAYE computation</div><table class="data-table"><tr><td class="muted">Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr><tr><td class="muted">Pre-PAYE deductions (SHIF+AHL+NSSF)</td><td class="mono">&ndash; ${fmt(e.shif+e.ahl_ee+e.nssf_ee)}</td></tr><tr><td class="muted">Taxable income</td><td class="mono">${fmt(e.taxable)}</td></tr><tr><td class="muted">Personal relief</td><td class="mono">&ndash; KES 2,400</td></tr></table></div><div class="payslip-net"><div><div class="payslip-net-label">Net pay</div></div><div class="payslip-net-value">${fmt(e.net)}</div></div></div></div>`;
+  document.getElementById('payslip-view').innerHTML=`<div class="payslip-wrap"><div class="payslip-header"><div><div style="font-family:var(--font-mono);font-size:0.6rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--white-dim);margin-bottom:4px">Payslip</div><div style="font-size:0.8rem;font-weight:600;color:var(--white);margin-bottom:4px">${esc(getCompany())}</div><div class="payslip-name">${e.surname},<br>${esc(e.othernames||'')}</div><div class="payslip-meta" style="margin-top:10px">${e.krapin?'KRA PIN: '+esc(e.krapin)+'<br>':''}${e.idno?'ID No: '+esc(e.idno)+'<br>':''}${e.empid?'Emp ID: '+esc(e.empid)+'<br>':''}${e.nssfno?'NSSF: '+esc(e.nssfno)+'<br>':''}${e.shifno?'SHIF: '+esc(e.shifno):''}</div></div><div class="payslip-month">${esc(e.month||'Month N/A')}</div></div><div class="payslip-body"><div class="payslip-section"><div class="payslip-section-label">Earnings</div><table class="data-table"><tr><td class="muted">Basic pay</td><td class="mono">${fmt(e.basic)}</td></tr>${e.allowances?`<tr><td class="muted">Taxable benefits</td><td class="mono">${fmt(e.allowances)}</td></tr>`:''}${e.overtime?`<tr><td class="muted">Overtime</td><td class="mono">${fmt(e.overtime)}</td></tr>`:''}${e.bonus?`<tr><td class="muted">Bonus / commission</td><td class="mono">${fmt(e.bonus)}</td></tr>`:''}<tr class="total-row"><td>Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">Statutory deductions</div><table class="data-table"><tr><td class="muted">PAYE (income tax)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.paye)}</td></tr><tr><td class="muted">SHIF (2.75%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.shif)}</td></tr>${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employee (→ NSSF)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf_ee)}</td></tr>${e.pension_ee?`<tr><td class="muted">NSSF Tier II employee (→ pension fund)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.pension_ee)}</td></tr>`:''}`:`<tr><td class="muted">NSSF employee share</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.nssf_ee)}</td></tr>`}<tr><td class="muted">Affordable Housing Levy (1.5%)</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.ahl_ee)}</td></tr>${e.helb?`<tr><td class="muted">HELB repayment</td><td class="mono" style="color:var(--red)">&ndash; ${fmt(e.helb)}</td></tr>`:''}<tr class="total-row"><td>Total statutory</td><td class="mono">&ndash; ${fmt(e.statutoryDeductions)}</td></tr></table></div>${(e.advance+e.loan)?`<div class="payslip-section"><div class="payslip-section-label">Loan &amp; advance recovery</div><table class="data-table">${e.advance?`<tr><td class="muted">Salary advance recovery</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.advance)}</td></tr>`:''}${e.loan?`<tr><td class="muted">Staff loan repayment</td><td class="mono" style="color:var(--amber)">&ndash; ${fmt(e.loan)}</td></tr>`:''}</table></div>`:''}<div class="payslip-section"><div class="payslip-section-label">Employer contributions</div><table class="data-table">${e.nssfType==='contracted'?`<tr><td class="muted">NSSF Tier I employer (→ NSSF)</td><td class="mono">${fmt(e.nssf_er)}</td></tr>${e.pension_er?`<tr><td class="muted">NSSF Tier II employer (→ pension fund)</td><td class="mono">${fmt(e.pension_er)}</td></tr>`:''}`:`<tr><td class="muted">NSSF employer share</td><td class="mono">${fmt(e.nssf_er)}</td></tr>`}<tr><td class="muted">AHL employer share (1.5%)</td><td class="mono">${fmt(e.ahl_er)}</td></tr></table></div><div class="payslip-section"><div class="payslip-section-label">PAYE computation</div><table class="data-table"><tr><td class="muted">Gross pay</td><td class="mono">${fmt(e.gross)}</td></tr><tr><td class="muted">Pre-PAYE deductions (SHIF+AHL+NSSF)</td><td class="mono">&ndash; ${fmt(e.shif+e.ahl_ee+e.nssf_ee)}</td></tr><tr><td class="muted">Taxable income</td><td class="mono">${fmt(e.taxable)}</td></tr><tr><td class="muted">Personal relief</td><td class="mono">&ndash; KES 2,400</td></tr></table></div><div class="payslip-net"><div><div class="payslip-net-label">Net pay</div></div><div class="payslip-net-value">${fmt(e.net)}</div></div></div></div>`;
 }
 
 function renderSummary(){
@@ -1850,7 +1980,41 @@ function exportFBT(){
 
 function exportNSSF(){if(!employees.length){alert('No employees loaded.');return;}const wb=XLSX.utils.book_new(),ws={},month=employees[0].month||'';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','NSSF NO','GROSS PAY','VOLUNTARY'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));employees.forEach((e,i)=>{const r=i+2;const nssfGross=e.nssfType==='contracted'?Math.min(e.gross,9000):e.nssfType==='old'?0:e.gross;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.nssfno||'');xn(ws,col(6)+r,nssfGross);xn(ws,col(7)+r,0);});ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:16},{wch:14},{wch:12}];ws['!rows']=[{hpt:22},...Array(employees.length).fill({hpt:18})];ws['!ref']=`A1:${col(7)}${employees.length+1}`;XLSX.utils.book_append_sheet(wb,ws,'NSSF');XLSX.writeFile(wb, exportFilename('NSSF-Schedule', month)+'.xlsx');}
 
-function exportPensionFund(){if(!employees.length){alert('No employees loaded.');return;}const contracted=employees.filter(e=>e.nssfType==='contracted'&&e.pension_ee>0);if(!contracted.length){alert('No contracted-out employees with Tier II contributions found.');return;}const wb=XLSX.utils.book_new(),ws={},month=contracted[0].month||'';const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','PENSION MEMBER NO','GROSS PAY','TIER II EMPLOYEE','TIER II EMPLOYER','TOTAL'];cols.forEach((h,i)=>xh(ws,col(i)+'1',h));contracted.forEach((e,i)=>{const r=i+2,total=e.pension_ee+e.pension_er;xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);xstr(ws,col(1)+r,e.surname||'');xstr(ws,col(2)+r,e.othernames||'');xstr(ws,col(3)+r,e.idno||'');xstr(ws,col(4)+r,e.krapin||'');xstr(ws,col(5)+r,e.pensionno||'');xn(ws,col(6)+r,e.gross);xn(ws,col(7)+r,e.pension_ee);xn(ws,col(8)+r,e.pension_er);xn(ws,col(9)+r,total);});const tr=contracted.length+2;['','TOTALS','','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));xn(ws,col(6)+tr,contracted.reduce((a,e)=>a+e.gross,0),true,'E2EFDA');xn(ws,col(7)+tr,contracted.reduce((a,e)=>a+e.pension_ee,0),true,'E2EFDA');xn(ws,col(8)+tr,contracted.reduce((a,e)=>a+e.pension_er,0),true,'E2EFDA');xn(ws,col(9)+tr,contracted.reduce((a,e)=>a+e.pension_ee+e.pension_er,0),true,'E2EFDA');ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:18},{wch:14},{wch:16},{wch:16},{wch:14}];ws['!rows']=[{hpt:22},...Array(contracted.length+2).fill({hpt:18})];ws['!ref']=`A1:${col(9)}${tr}`;XLSX.utils.book_append_sheet(wb,ws,'Pension Fund');XLSX.writeFile(wb, exportFilename('PensionFund-TierII', month)+'.xlsx');}
+function exportPensionFund(){if(!employees.length){alert('No employees loaded.');return;}
+  const contracted=employees.filter(e=>e.nssfType==='contracted'&&e.pension_ee>0);
+  if(!contracted.length){alert('No contracted-out employees with Tier II contributions found.');return;}
+  const wb=XLSX.utils.book_new(),ws={},month=contracted[0].month||'';
+  // Same layout as NSSF schedule + pension member no column
+  const cols=['PAYROLL NUMBER','SURNAME','OTHER NAMES','ID NO','KRA PIN','PENSION MEMBER NO','NSSF NO','GROSS PAY','TIER II EE','TIER II ER','TOTAL PENSION','VOLUNTARY'];
+  cols.forEach((h,i)=>xh(ws,col(i)+'1',h));
+  contracted.forEach((e,i)=>{
+    const r=i+2,total=e.pension_ee+e.pension_er;
+    xstr(ws,col(0)+r,e.empid||`EMP-${String(i+1).padStart(3,'0')}`);
+    xstr(ws,col(1)+r,e.surname||'');
+    xstr(ws,col(2)+r,e.othernames||'');
+    xstr(ws,col(3)+r,e.idno||'');
+    xstr(ws,col(4)+r,e.krapin||'');
+    xstr(ws,col(5)+r,e.pensionno||'');
+    xstr(ws,col(6)+r,e.nssfno||'');
+    xn(ws,col(7)+r,e.gross);
+    xn(ws,col(8)+r,e.pension_ee);
+    xn(ws,col(9)+r,e.pension_er);
+    xn(ws,col(10)+r,total);
+    xn(ws,col(11)+r,0);
+  });
+  const tr=contracted.length+2;
+  ['','TOTALS','','','','','','','','','',''].forEach((v,i)=>xstr(ws,col(i)+tr,v,true,'E2EFDA'));
+  xn(ws,col(7)+tr,contracted.reduce((a,e)=>a+e.gross,0),true,'E2EFDA');
+  xn(ws,col(8)+tr,contracted.reduce((a,e)=>a+e.pension_ee,0),true,'E2EFDA');
+  xn(ws,col(9)+tr,contracted.reduce((a,e)=>a+e.pension_er,0),true,'E2EFDA');
+  xn(ws,col(10)+tr,contracted.reduce((a,e)=>a+e.pension_ee+e.pension_er,0),true,'E2EFDA');
+  xn(ws,col(11)+tr,0,true,'E2EFDA');
+  ws['!cols']=[{wch:16},{wch:18},{wch:22},{wch:14},{wch:16},{wch:18},{wch:16},{wch:14},{wch:14},{wch:14},{wch:14},{wch:12}];
+  ws['!rows']=[{hpt:22},...Array(contracted.length+2).fill({hpt:18})];
+  ws['!ref']=`A1:${col(11)}${tr}`;
+  XLSX.utils.book_append_sheet(wb,ws,'Pension Fund');
+  XLSX.writeFile(wb, exportFilename('PensionFund-TierII', month)+'.xlsx');
+}
 
 // ── PAYWALL ───────────────────────────────────────────────────────────────────
 const BACKEND = 'https://ledja-backend.onrender.com';
