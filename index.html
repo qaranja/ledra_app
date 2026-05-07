@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ledja — Payroll</title>
+<title>Ledja Payroll | Built for Compliance</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiNGRkZGRkYiLz4KICA8cmVjdCB4PSIxMiIgeT0iMTYiIHdpZHRoPSIyNiIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iIzFDM0E1RSIvPgogIDxyZWN0IHg9IjEyIiB5PSIyNCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiM0QTdGQTUiIG9wYWNpdHk9IjAuOCIvPgogIDxyZWN0IHg9IjEyIiB5PSIzMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiM0QTdGQTUiIG9wYWNpdHk9IjAuOCIvPgogIDxyZWN0IHg9IjEyIiB5PSIzOCIgd2lkdGg9IjE0IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiM0QTdGQTUiIG9wYWNpdHk9IjAuNiIvPgogIDxyZWN0IHg9IjM4IiB5PSIzMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiByeD0iNyIgZmlsbD0iI0ZCQjcyNCIvPgogIDx0ZXh0IHg9IjQ1IiB5PSI0MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iIzFDM0E1RSI+JiMxMDAwMzs8L3RleHQ+Cjwvc3ZnPg=="/>
+  <link rel="shortcut icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiNGRkZGRkYiLz4KICA8cmVjdCB4PSIxMiIgeT0iMTYiIHdpZHRoPSIyNiIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iIzFDM0E1RSIvPgogIDxyZWN0IHg9IjEyIiB5PSIyNCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiM0QTdGQTUiIG9wYWNpdHk9IjAuOCIvPgogIDxyZWN0IHg9IjEyIiB5PSIzMSIgd2lkdGg9IjIyIiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiM0QTdGQTUiIG9wYWNpdHk9IjAuOCIvPgogIDxyZWN0IHg9IjEyIiB5PSIzOCIgd2lkdGg9IjE0IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiM0QTdGQTUiIG9wYWNpdHk9IjAuNiIvPgogIDxyZWN0IHg9IjM4IiB5PSIzMiIgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiByeD0iNyIgZmlsbD0iI0ZCQjcyNCIvPgogIDx0ZXh0IHg9IjQ1IiB5PSI0MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iIzFDM0E1RSI+JiMxMDAwMzs8L3RleHQ+Cjwvc3ZnPg=="/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -212,7 +214,7 @@ select option{background:var(--navy-mid)}
 
 /* Mobile: <640px — bottom tab bar */
 @media(max-width:639px){
-  .app-header{padding:0 1rem;height:52px}
+  .app-header{padding:0 1rem;height:64px}
   .app-logo{font-size:1rem!important}
   .rate-pill .rate-pill-label{display:none}
   .rate-pill{padding:5px 8px;gap:5px}
@@ -220,7 +222,7 @@ select option{background:var(--navy-mid)}
   .sidebar{display:none!important}
   .sidebar-overlay{display:none!important}
   .hamburger{display:none!important}
-  .main{height:calc(100vh - 52px - 56px);padding-bottom:0}
+  .main{height:calc(100vh - 64px - 56px);padding-bottom:0}
   /* Bottom nav bar */
   .bottom-nav{
     display:flex!important;position:fixed;bottom:0;left:0;right:0;
